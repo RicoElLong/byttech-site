@@ -1,0 +1,27 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Runtime data and logs
+data/
+*.sqlite
+*.sqlite3
+*.db
+*.db-*
+*.sqlite3-*
+*.log
+backups/
+
+# Development output
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+node_modules/
+test-results/
+playwright-report/
+.DS_Store
+Thumbs.db
