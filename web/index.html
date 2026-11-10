@@ -289,11 +289,13 @@
  .hero-visual .hero-photo{height:100%;width:100%;object-fit:contain;object-position:bottom}
 }
 @media(max-width:900px){
- .header-inner{min-height:65px;padding-inline:18px}
+ .header-inner{min-height:65px;gap:10px;padding-inline:16px}
+ .header-inner .logo{min-width:0;flex-shrink:1}
+ .header-inner .logo-image{max-width:100%}
  .menu-toggle{display:flex;order:3;flex-shrink:0}
- .header-actions{flex-direction:column-reverse;gap:4px;margin-left:auto;order:2}
- .header-phone{min-height:26px}
- .header-cta{padding:9px 12px;min-height:38px}
+ .header-actions{margin-left:auto;order:2}
+ .header-phone{min-height:44px;font-size:clamp(16px,4.35vw,18px)}
+ .header-cta{display:none}
  .header-nav{display:none}
  .header.menu-open .header-nav{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;padding:8px 16px;background:#fff;box-shadow:0 18px 24px rgba(14,41,73,.12);border:1px solid #e6eef9;border-radius:0 0 14px 14px}
  .header.menu-open .header-nav a{padding:14px 8px;min-height:45px;border-bottom:1px solid #f1f5f9}
@@ -329,10 +331,7 @@
 .logo-image{width:200px;height:auto;max-height:65px;object-fit:contain;object-position:left center}
 @media(max-width:600px){.logo-image{width:153px;max-height:42px}}
 @media(max-width:480px){
- .header-inner{display:grid;grid-template-columns:1fr auto;row-gap:6px}
- .menu-toggle{order:0}
- .header-actions{grid-column:1 / -1;justify-self:center;margin-left:0}
- .quiz-card{scroll-margin-top:144px}
+ .header-phone svg{display:none}
 }
 
 /* Service price rows (symptoms) */
