@@ -338,21 +338,25 @@
  .header-phone svg{display:none}
 }
 
-/* Service price rows (symptoms) */
+/* Symptom cards and starting prices */
 .service-section{position:relative;scroll-margin-top:95px}
 .service-anchor{position:absolute;top:-95px;width:1px;height:1px}
-.services-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.service-row{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid #dae6f1;border-radius:13px;padding:20px 23px;min-height:90px;transition:border-color .2s,box-shadow .2s}
-.service-row:hover{border-color:#80cdec;box-shadow:0 6px 24px rgba(16,70,110,.07)}
-.service-index{flex:none;font-size:13px;color:#87a8bb;font-weight:800;letter-spacing:.04em}
-.service-row h3{margin:0;flex:1;min-width:0;font-size:16px;line-height:1.4;font-weight:700;color:#172438}
-.service-price{flex:none;font-size:18px;font-weight:800;letter-spacing:-.02em;color:var(--blue-dark);white-space:nowrap}
-.service-action{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:24px;padding:22px 26px;border-radius:13px;background:#edf8ff}
-.service-action p{font-size:15px;color:#284a63;line-height:1.5}
-.service-action .btn{flex-shrink:0}
+.services-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.service-row{display:flex;flex-direction:column;align-items:flex-start;gap:12px;background:#fff;border:1px solid #dae6f1;border-radius:17px;padding:20px}
+.service-icon{display:grid;place-items:center;flex:none;width:52px;height:52px;border-radius:14px;color:#0066a2;background:#e8f5ff}
+.service-row h3{margin:0;flex:1;font-size:17px;line-height:1.3;font-weight:700;color:#172438}
+.service-price{font-size:18px;font-weight:800;letter-spacing:-.02em;color:var(--blue-dark)}
+.service-link{display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:44px;padding:8px 12px;border:1px solid #b7d9ef;border-radius:9px;color:#0066a2;background:#f4faff;font-size:13px;font-weight:700;line-height:1.25;text-decoration:none}
+.service-link:hover{background:#e6f4ff;border-color:#83bbdf}
+.service-link:focus-visible{outline:3px solid #9b5800;outline-offset:3px}
+.service-link span{flex-shrink:0;font-size:16px}
+.service-row .service-link{align-self:stretch}
+.service-action{display:flex;align-items:center;gap:16px;margin-top:18px;padding:18px 20px;border:1px solid #badbf2;border-radius:17px;background:#eff8ff}
+.service-action p{flex:1;margin:0;font-size:15px;color:#284a63;line-height:1.5}
 .service-subhead{margin-top:75px;margin-bottom:30px}
-@media(max-width:840px){.services-grid{grid-template-columns:1fr}}
-@media(max-width:600px){.service-row{padding:15px;gap:11px;min-height:70px}.service-row h3{font-size:14px}.service-price{font-size:15px}.service-index{font-size:11px}.service-action{flex-direction:column;align-items:stretch;padding:18px}.service-action .btn{width:100%}.service-subhead{margin-top:50px}}
+@media(max-width:900px){.services-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.services-grid{gap:11px}.service-row{padding:14px;gap:10px}.service-row h3{font-size:15px}.service-icon{width:44px;height:44px}.service-icon svg{width:25px;height:25px}.service-price{font-size:16px}.service-link{padding-inline:8px;font-size:12px}.service-action{flex-wrap:wrap;padding:16px}.service-action .service-link{width:100%}.service-subhead{margin-top:50px}}
+@media(max-width:359px){.services-grid{grid-template-columns:1fr}}
 
 /* MAX floating contact widget: no external tracking until consent/configuration */
 .max-fab{position:fixed;z-index:94;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));border:0;border-radius:21px;width:64px;height:64px;background:#285df2;color:#fff;box-shadow:0 9px 27px rgba(17,78,169,.35);display:grid;place-content:center;gap:0;text-align:center;cursor:pointer;transition:transform .2s}
@@ -463,7 +467,7 @@
       </div>
 
       <div class="quiz-step active" data-step="1">
-        <h3>Какая у вас марка машинки?</h3>
+        <h3 tabindex="-1">Какая у вас марка машинки?</h3>
         <p>Если не знаете точно — выберите «Другая»</p>
         <div class="quiz-grid" data-field="brand">
           <button type="button" class="quiz-opt" data-value="Bosch">Bosch</button>
@@ -484,7 +488,7 @@
       </div>
 
       <div class="quiz-step" data-step="2">
-        <h3>Что случилось с машинкой?</h3>
+        <h3 tabindex="-1">Что случилось с машинкой?</h3>
         <p>Выберите одну основную проблему</p>
         <div class="quiz-grid" data-field="problem">
           <button type="button" class="quiz-opt" data-value="Не сливает воду"><span class="emoji">💧</span>Не сливает воду</button>
@@ -732,19 +736,31 @@
       <h2 id="servicesTitle">Ремонт стиральных машин <em>на дому</em></h2>
       <p>Не знаете причину поломки? Выберите, что происходит с машинкой. Это стартовая стоимость работы — точную цену назову после диагностики и согласую до ремонта.</p>
     </div>
+    <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true"><defs>
+      <symbol id="service-icon-drum" viewBox="0 0 32 32"><rect x="5" y="3.5" width="22" height="25" rx="4"/><path d="M5 10h22M9 7h1m12 0h1"/><circle cx="16" cy="19" r="5.5"/><path d="m14.5 17 3 4m0-4-3 4"/></symbol>
+      <symbol id="service-icon-spin" viewBox="0 0 32 32"><path d="M6 14a10 10 0 0 1 17-6l3 3m0-5v5h-5M26 18a10 10 0 0 1-17 6l-3-3m0 5v-5h5M16 10c-1.5 2.5-4 5-4 7.2a4 4 0 0 0 8 0c0-2.2-2.5-4.7-4-7.2Z"/></symbol>
+      <symbol id="service-icon-leak" viewBox="0 0 32 32"><path d="M22 16c-1.3-3.8-4.3-7.8-7-12-3.5 5.1-8 9.4-8 14.4a8 8 0 0 0 11 7.4M11 19a4 4 0 0 0 4 4m9-5c-1.5 2.4-4 4.9-4 7a4 4 0 0 0 8 0c0-2.1-2.5-4.6-4-7Z"/></symbol>
+      <symbol id="service-icon-heat" viewBox="0 0 32 32"><path d="M12 19.6V7a4 4 0 0 1 8 0v12.6a7 7 0 1 1-8 0Zm8-10.6h4m-4 5h4m-4 5h4M16 14v8"/><circle cx="16" cy="25" r="2"/></symbol>
+      <symbol id="service-icon-fill" viewBox="0 0 32 32"><path d="M9 4v4m7-4v4m-9 0h11v4h5a5 5 0 0 1 5 5v2h-5v-2H8a4 4 0 0 1-4-4V9h3m13 3V9m5.5 13c-.8 1.4-2.5 2.9-2.5 4.3a2.5 2.5 0 0 0 5 0c0-1.4-1.7-2.9-2.5-4.3Z"/></symbol>
+      <symbol id="service-icon-noise" viewBox="0 0 32 32"><path d="M5 12h4l6-5v18l-6-5H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Zm14 0a6 6 0 0 1 0 8m4-12a11 11 0 0 1 0 16m3-19a15 15 0 0 1 0 22"/></symbol>
+      <symbol id="service-icon-power" viewBox="0 0 32 32"><path d="M16 4v11m6.5-7a11 11 0 1 1-13 0"/><path d="M12.5 21h7"/></symbol>
+      <symbol id="service-icon-help" viewBox="0 0 32 32"><path d="M8 23l-3 3v-6a9 9 0 0 1-2-5.5C3 9.3 8.8 5 16 5s13 4.3 13 9.5S23.2 24 16 24c-2.4 0-4.6-.4-6.5-1.3L8 23Z"/><path d="M9.5 14.5h.1m6.4 0h.1m6.4 0h.1"/></symbol>
+      <symbol id="service-icon-drain" viewBox="0 0 32 32"><path d="M4 12h24v9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3Zm2 5c2.5-2 4.3-2 6.7 0s4.2 2 6.6 0 4.2-2 6.7 0M16 3v6m-3-3 3 3 3-3m-3 18v5m-3-3 3 3 3-3"/></symbol>
+    </defs></svg>
     <div class="services-grid reveal" role="list" aria-label="Стоимость ремонта по характеру неисправности">
-      <div class="service-row" role="listitem"><span class="service-index" aria-hidden="true">01</span><h3>Не вращается барабан</h3><span class="service-price">от 1 250 ₽</span></div>
-      <div class="service-row" role="listitem"><span class="service-index" aria-hidden="true">02</span><h3>Не нагревает воду</h3><span class="service-price">от 1 300 ₽</span></div>
-      <div class="service-row" role="listitem"><span class="service-index" aria-hidden="true">03</span><h3>Протекает стиральная машина</h3><span class="service-price">от 1 350 ₽</span></div>
-      <div class="service-row" role="listitem"><span class="service-index" aria-hidden="true">04</span><h3>Не сливает воду</h3><span class="service-price">от 1 300 ₽</span></div>
-      <div class="service-row" role="listitem"><span class="service-index" aria-hidden="true">05</span><h3>Не отжимает</h3><span class="service-price">от 1 400 ₽</span></div>
-      <div class="service-row" role="listitem"><span class="service-index" aria-hidden="true">06</span><h3>Сильно шумит</h3><span class="service-price">от 1 250 ₽</span></div>
-      <div class="service-row" role="listitem"><span class="service-index" aria-hidden="true">07</span><h3>Не включается</h3><span class="service-price">от 1 300 ₽</span></div>
-      <div class="service-row" role="listitem"><span class="service-index" aria-hidden="true">08</span><h3>Не набирает воду</h3><span class="service-price">от 1 300 ₽</span></div>
+      <div class="service-row" role="listitem"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-drum"/></svg></span><h3>Не вращается барабан</h3><span class="service-price">от 1 250 ₽</span><a class="service-link" href="#quiz" data-service-problem="Не крутится барабан" aria-label="Вызвать мастера — Не вращается барабан">Вызвать мастера<span aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-heat"/></svg></span><h3>Не нагревает воду</h3><span class="service-price">от 1 300 ₽</span><a class="service-link" href="#quiz" data-service-problem="Не греет воду" aria-label="Вызвать мастера — Не нагревает воду">Вызвать мастера<span aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-leak"/></svg></span><h3>Протекает стиральная машина</h3><span class="service-price">от 1 350 ₽</span><a class="service-link" href="#quiz" data-service-problem="Протекает" aria-label="Вызвать мастера — Протекает стиральная машина">Вызвать мастера<span aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-drain"/></svg></span><h3>Не сливает воду</h3><span class="service-price">от 1 300 ₽</span><a class="service-link" href="#quiz" data-service-problem="Не сливает воду" aria-label="Вызвать мастера — Не сливает воду">Вызвать мастера<span aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-spin"/></svg></span><h3>Не отжимает</h3><span class="service-price">от 1 400 ₽</span><a class="service-link" href="#quiz" data-service-problem="Не отжимает" aria-label="Вызвать мастера — Не отжимает">Вызвать мастера<span aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-noise"/></svg></span><h3>Сильно шумит</h3><span class="service-price">от 1 250 ₽</span><a class="service-link" href="#quiz" data-service-problem="Шумит при отжиме" aria-label="Вызвать мастера — Сильно шумит">Вызвать мастера<span aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-power"/></svg></span><h3>Не включается</h3><span class="service-price">от 1 300 ₽</span><a class="service-link" href="#quiz" data-service-problem="Не включается" aria-label="Вызвать мастера — Не включается">Вызвать мастера<span aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-fill"/></svg></span><h3>Не набирает воду</h3><span class="service-price">от 1 300 ₽</span><a class="service-link" href="#quiz" data-service-problem="Не набирает воду" aria-label="Вызвать мастера — Не набирает воду">Вызвать мастера<span aria-hidden="true">→</span></a></div>
     </div>
     <div class="service-action reveal">
-      <p>Расскажите о неисправности — помогу определить, какой ремонт нужен.</p>
-      <a href="#quiz" class="btn btn-primary">Оставить заявку</a>
+      <span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-help"/></svg></span>
+      <p><strong>Другая неисправность</strong><br>Расскажите, что случилось с машинкой.</p>
+      <a class="service-link" href="#quiz" data-service-problem="Другое" aria-label="Рассказать о проблеме — другая неисправность">Рассказать о проблеме<span aria-hidden="true">→</span></a>
     </div>
     <div class="section-head center reveal service-subhead">
       <span class="section-label">Дополнительный прайс</span>

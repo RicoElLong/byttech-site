@@ -84,18 +84,32 @@
       ([4, 6, 8, 10].includes(index) ? '-' : '') + value.toString(16).padStart(2, '0')).join('');
   }
 
+  function selectOption(grid, option) {
+    grid.querySelectorAll('.quiz-opt').forEach(item => {
+      item.classList.toggle('selected', item === option);
+      item.setAttribute('aria-pressed', String(item === option));
+    });
+    answers[grid.dataset.field] = option.dataset.value;
+    showError();
+    updateUI();
+  }
+
   quiz.querySelectorAll('.quiz-grid').forEach(grid => {
     grid.querySelectorAll('.quiz-opt').forEach(option => {
       option.addEventListener('click', () => {
-        if (sending) return;
-        grid.querySelectorAll('.quiz-opt').forEach(item => {
-          item.classList.toggle('selected', item === option);
-          item.setAttribute('aria-pressed', String(item === option));
-        });
-        answers[grid.dataset.field] = option.dataset.value;
-        showError();
-        updateUI();
+        if (!sending) selectOption(grid, option);
       });
+    });
+  });
+  const problemGrid = quiz.querySelector('[data-field="problem"]');
+  const problemOptions = [...problemGrid.querySelectorAll('.quiz-opt')];
+  document.querySelectorAll('[data-service-problem]').forEach(link => {
+    link.addEventListener('click', () => {
+      const option = problemOptions.find(item => item.dataset.value === link.dataset.serviceProblem);
+      if (sending || step === 4 || !option) return;
+      step = answers.brand ? 2 : 1;
+      selectOption(problemGrid, option);
+      steps[step - 1].querySelector('h3').focus({preventScroll: true});
     });
   });
   preferredDate.addEventListener('change', refreshPreferred);
