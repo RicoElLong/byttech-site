@@ -124,7 +124,6 @@
   .stat b.blue{color:var(--blue)}
   .stat span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:500}
   .hero-visual{position:relative;display:flex;align-items:center;justify-content:center}
-  .hero-visual svg{width:100%;max-width:380px;height:auto}
   @media (max-width:960px){
     .hero-grid{grid-template-columns:1fr;gap:32px}
     .hero-visual{order:-1;max-width:300px;margin:0 auto}
@@ -275,7 +274,7 @@
 .hero-cta .btn{border-radius:11px}
 .hero-visual{height:100%;min-height:510px;align-items:flex-end;overflow:visible}
 .hero-visual::before{content:"";position:absolute;inset:auto 0 0 2%;height:80%;border-radius:46% 50% 0 0;background:radial-gradient(circle at 70% 40%,rgba(255,255,255,.68),transparent 56%);z-index:-1}
-.hero-visual .hero-photo{display:block;width:auto;max-width:100%;height:min(560px,100%);object-fit:contain;object-position:center bottom;filter:drop-shadow(0 15px 22px rgba(33,62,91,.12))}
+.hero-washer{display:block;width:100%;height:100%;max-width:520px}
 .hero-proof{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:-8px;position:relative;z-index:2}
 .hero-proof-card{min-width:0;display:flex;gap:15px;align-items:center;background:#fff;border:1px solid #e3eef9;box-shadow:0 10px 35px rgba(32,92,138,.08);padding:19px;border-radius:16px}
 .hero-proof-icon{display:grid;place-items:center;width:43px;height:43px;border-radius:12px;background:#e8f6ff;color:#008fd0;font-size:24px;font-weight:800;flex-shrink:0}
@@ -293,7 +292,6 @@
  .hero-grid{grid-template-columns:1fr;gap:0;min-height:0}
  .hero-copy{padding:0}
  .hero-visual{order:2;max-width:570px;width:100%;min-height:0;height:380px;margin:18px auto 0}
- .hero-visual .hero-photo{height:100%;width:100%;object-fit:contain;object-position:bottom}
 }
 @media(max-width:900px){
  .header-inner{min-height:65px;gap:10px;padding-inline:16px}
@@ -311,7 +309,6 @@
  .hero-copy{padding:0}
  .hero h1{font-size:clamp(38px,7.1vw,58px)}
  .hero-visual{order:2;max-width:570px;width:100%;min-height:0;height:380px;margin:18px auto 0}
- .hero-visual .hero-photo{height:100%;width:100%;object-fit:contain;object-position:bottom}
  .hero-proof{margin-top:16px}
 }
 @media(max-width:600px){
@@ -424,7 +421,95 @@
       </div>
     </div>
     <div class="hero-visual">
-      <img class="hero-photo" src="data:image/avif;base64,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" width="310" height="446" loading="eager" decoding="async" fetchpriority="high" alt="Девушка рядом со стиральной машиной" />
+      <svg class="hero-washer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" width="520" height="520" role="img" aria-label="Стиральная машина с фронтальной загрузкой">
+        <defs>
+          <radialGradient id="washer-halo">
+            <stop stop-color="#a4e5ff" stop-opacity=".76"/>
+            <stop offset="1" stop-color="#a4e5ff" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="washer-case" x2="1" y2="1" gradientUnits="objectBoundingBox">
+            <stop stop-color="#fff"/>
+            <stop offset=".55" stop-color="#eaf2f8"/>
+            <stop offset="1" stop-color="#c7d6e4"/>
+          </linearGradient>
+          <linearGradient id="washer-side" x2="1" y2="1" gradientUnits="objectBoundingBox">
+            <stop stop-color="#c0d3e4"/>
+            <stop offset=".55" stop-color="#91abc3"/>
+            <stop offset="1" stop-color="#728ea8"/>
+          </linearGradient>
+          <linearGradient id="washer-rim" x2=".75" y2="1" gradientUnits="objectBoundingBox">
+            <stop stop-color="#9ab0c4"/>
+            <stop offset=".37" stop-color="#fff"/>
+            <stop offset=".69" stop-color="#8499ae"/>
+            <stop offset="1" stop-color="#dbe9f4"/>
+          </linearGradient>
+          <radialGradient id="washer-window" cx=".36" cy=".3" r=".8">
+            <stop stop-color="#557c99"/>
+            <stop offset=".65" stop-color="#203c58"/>
+            <stop offset="1" stop-color="#0c1b30"/>
+          </radialGradient>
+          <linearGradient id="washer-glass" x2=".35" y2="1" gradientUnits="objectBoundingBox">
+            <stop stop-color="#d2f3ff" stop-opacity=".42"/>
+            <stop offset=".58" stop-color="#addfff" stop-opacity=".02"/>
+            <stop offset="1" stop-color="#07172a" stop-opacity=".33"/>
+          </linearGradient>
+          <pattern id="washer-perforations" width="10" height="10" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.2" fill="#93c4e2" opacity=".54"/>
+            <circle cx="7" cy="7" r="1.2" fill="#93c4e2" opacity=".4"/>
+          </pattern>
+          <clipPath id="washer-window-clip"><circle cx="244" cy="283" r="87"/></clipPath>
+          <filter id="washer-floor-blur" x="-30%" y="-150%" width="160%" height="400%">
+            <feGaussianBlur stdDeviation="9"/>
+          </filter>
+        </defs>
+        <circle cx="278" cy="254" r="238" fill="url(#washer-halo)"/>
+        <circle cx="267" cy="255" r="221" fill="none" stroke="#fff" stroke-opacity=".7"/>
+        <circle cx="267" cy="255" r="207" fill="none" stroke="#80badb" stroke-opacity=".27" stroke-dasharray="2 8"/>
+        <path d="M63 147h28m-14-14v28m341 244h20m-10-10v20" fill="none" stroke="#609fc3" stroke-opacity=".55" stroke-linecap="round"/>
+        <circle cx="455" cy="164" r="7" fill="#fff" opacity=".9"/>
+        <circle cx="83" cy="376" r="5" fill="#a5d9f2"/>
+        <ellipse cx="264" cy="477" rx="168" ry="16" fill="#3b6389" opacity=".29" filter="url(#washer-floor-blur)"/>
+        <path d="M145 443h28v25q0 6-6 6h-16q-6 0-6-6zm198 0h28v25q0 6-6 6h-16q-6 0-6-6zm47-14h23v24q0 6-6 6h-11q-6 0-6-6z" fill="#485d72"/>
+        <path d="m137 77 32-23q9-6 23-6h188q15 0 26 8l18 14q9 7 9 20v334q0 12-10 19l-39 25V94z" fill="url(#washer-side)" stroke="#829eb8" stroke-width="1.5"/>
+        <path d="M401 116v282m12-283v277" stroke="#7290ad" stroke-opacity=".6"/>
+        <path d="M137 77 169 54q9-6 23-6h188q15 0 26 8l18 14-42 14z" fill="#e9f3fa" stroke="#bbcddd"/>
+        <rect x="115" y="76" width="271" height="389" rx="20" fill="url(#washer-case)" stroke="#a3b7ca" stroke-width="1.5"/>
+        <path d="M136 80h229q16 0 16 16v62H120V96q0-16 16-16Z" fill="#fff" opacity=".56"/>
+        <path d="M116 159h269m-269 260h269" fill="none" stroke="#aabed0"/>
+        <path d="M118 161h266m-266 260h266" fill="none" stroke="#fff" opacity=".9"/>
+        <rect x="132" y="96" width="76" height="44" rx="6" fill="#eff5fa" stroke="#bfceda"/>
+        <path d="M147 126h46" stroke="#849bb0" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="248" cy="118" r="23" fill="#a4b9ca"/>
+        <circle cx="248" cy="117" r="19" fill="url(#washer-rim)" stroke="#eef5fa" stroke-width="2"/>
+        <circle cx="248" cy="117" r="13" fill="#eaf1f6"/>
+        <path d="M248 104v8" stroke="#097fb4" stroke-width="2.4" stroke-linecap="round"/>
+        <rect x="284" y="101" width="82" height="29" rx="6" fill="#1c3146"/>
+        <text x="296" y="121" fill="#b5f1ff" font-family="monospace" font-size="14" letter-spacing="1">40°</text>
+        <circle cx="351" cy="115" r="2.5" fill="#82dbf0"/>
+        <circle cx="244" cy="286" r="113" fill="#7794af" opacity=".24"/>
+        <circle cx="244" cy="283" r="111" fill="url(#washer-rim)" stroke="#a2b6c8" stroke-width="2"/>
+        <circle cx="244" cy="283" r="101" fill="#d9e4ee" stroke="#f8fcff" stroke-width="1.5"/>
+        <circle cx="244" cy="283" r="94" fill="#253e55"/>
+        <circle cx="244" cy="283" r="88" fill="url(#washer-window)"/>
+        <g clip-path="url(#washer-window-clip)">
+          <g data-washer-drum>
+            <circle cx="244" cy="283" r="83" fill="url(#washer-perforations)"/>
+            <g fill="#acc5d8" opacity=".65">
+              <path d="M219 197q25-7 51 1l-13 18q-13 5-28 0z"/>
+              <path d="M219 197q25-7 51 1l-13 18q-13 5-28 0z" transform="rotate(120 244 283)"/>
+              <path d="M219 197q25-7 51 1l-13 18q-13 5-28 0z" transform="rotate(240 244 283)"/>
+            </g>
+            <path d="M163 322q17-34 42-23 18 8 31-3 22-19 40 0 23 24 50 9l-7 40-52 27-71-7z" fill="#3c9dc9"/>
+            <path d="M180 338q19-18 40-9 20 9 40-5 15-10 42 2l-13 32-52 12z" fill="#81d5ed"/>
+            <path d="M193 317q11-26 37-14 16 7 30 0" fill="none" stroke="#c5edfc" stroke-opacity=".65" stroke-width="3.5" stroke-linecap="round"/>
+          </g>
+          <circle cx="244" cy="283" r="87" fill="url(#washer-glass)"/>
+          <path d="M173 261q21-48 80-49m-79 61 2-5" fill="none" stroke="#f3fcff" stroke-opacity=".66" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <path d="M341 264h9a105 105 0 0 1 0 38h-9q4-19 0-38Z" fill="#eaf3fa" stroke="#b4c5d5"/>
+        <rect x="319" y="433" width="42" height="18" rx="5" fill="none" stroke="#a6bacd"/>
+        <path d="M333 439h15" stroke="#94acc1" stroke-linecap="round"/>
+      </svg>
     </div>
   </div>
   <div class="container hero-proof" aria-label="Преимущества сервиса">
@@ -964,9 +1049,24 @@
   document.getElementById('year').textContent = new Date().getFullYear();
 
   const header = document.getElementById('header');
+  const washerDrum = document.querySelector('[data-washer-drum]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let heroScrollQueued = false;
+  function updateHeroScroll() {
+    const scrollY = window.scrollY;
+    header.classList.toggle('scrolled', scrollY > 10);
+    const angle = reducedMotion.matches ? 0 : (Math.max(0, scrollY) * 0.7) % 360;
+    washerDrum.setAttribute('transform', 'rotate(' + angle + ' 244 283)');
+    heroScrollQueued = false;
+  }
   window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 10);
+    if (!heroScrollQueued) {
+      heroScrollQueued = true;
+      requestAnimationFrame(updateHeroScroll);
+    }
   }, {passive:true});
+  reducedMotion.addEventListener('change', updateHeroScroll);
+  updateHeroScroll();
 
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
