@@ -1,0 +1,17 @@
+.site-film,.film-toggle{display:none}
+@media (min-width:1024px){
+  html[data-film] body{background:#0c1c28}
+  html[data-film] .site-film{display:block;position:fixed;inset:0;z-index:0;pointer-events:none;background-size:cover;background-position:center}
+  .site-film::after{content:"";position:absolute;inset:0;background:rgba(5,18,28,.12)}
+  .site-film video{display:block;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s ease}
+  .site-film.is-playing video{opacity:1}
+  html[data-film] .hero,html[data-film] .section,html[data-film] .quiz-section,html[data-film] .footer{position:relative;z-index:1;background:transparent}
+  html[data-film] .hero::before{display:none}
+  html[data-film] .hero-copy{position:relative;border-radius:4px;background:rgba(249,252,255,.97);box-shadow:0 0 0 24px rgba(249,252,255,.97)}
+  html[data-film] .hero-visual{visibility:hidden}
+  html[data-film] .hero-proof{position:relative;z-index:1}
+  html[data-film] .section>.container,html[data-film] .quiz-section>.container,html[data-film] .footer>.container{border-radius:4px;background:rgba(249,252,255,.97);box-shadow:0 0 0 24px rgba(249,252,255,.97)}
+  html[data-film] .film-toggle:not([hidden]){display:block;position:fixed;z-index:95;left:18px;bottom:18px;min-height:44px;padding:10px 16px;border:1px solid #b9cddc;border-radius:100px;background:#f8fbfe;color:#163047;font:600 13px/1.4 system-ui;cursor:pointer;box-shadow:0 4px 18px #07192430}
+  .film-toggle:focus-visible{outline:3px solid #38bdf8;outline-offset:3px}
+}
+@media (prefers-reduced-motion:reduce){.site-film video{transition:none}}
