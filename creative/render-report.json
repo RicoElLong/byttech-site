@@ -1,0 +1,36 @@
+{
+  "status": "technical-preview-not-approved-art",
+  "checked_date": "2026-11-14",
+  "rendered_with": "Blender 4.3.2 / Eevee",
+  "video": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 512,
+        "height": 288,
+        "r_frame_rate": "24/1",
+        "nb_frames": "192"
+      }
+    ],
+    "format": {
+      "duration": "8.000000",
+      "size": "372267",
+      "bit_rate": "372267"
+    }
+  },
+  "sha256": "5c8944b7df62e557e9875b5c6939f0c183ed402f81e55064d549c65bc36a36d9",
+  "faststart_verified": true,
+  "adjacent_frame_mae_8bit": [
+    3.9001646041870117,
+    0.23292824625968933,
+    3.9781992435455322,
+    0.26286712288856506,
+    3.9156901836395264
+  ],
+  "seam_geometry_error_metres": 0.0,
+  "browser_visual_qa": "not-run: managed browser tool unavailable",
+  "website_deployment": "not-performed"
+}
