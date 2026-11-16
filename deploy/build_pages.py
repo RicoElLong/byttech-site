@@ -86,7 +86,7 @@ def build(destination: Path, *, production=False):
     for name in DOCUMENTS[1:]:
         output[name+'.html'] = (WEB_ROOT / (name+'.html')).read_text()
     cards = ''.join(f'<article class="article-card"><h2><a href="/articles/{a["slug"]}/">{escape(a["heading"])}</a></h2><p>{escape(a["description"])}</p></article>' for a in articles)
-    output['articles/index.html'] = page('Статьи о ремонте стиральных машин | БытТех','Как разобраться в поломке стиральной машины, выбрать мастера и заранее уточнить стоимость ремонта','<h1>Статьи о ремонте стиральных машин</h1><div class="article-cards">'+cards+'</div>')
+    output['articles/index.html'] = page('Причина поломки стиральной машины','Как разобраться в поломке стиральной машины, выбрать мастера и заранее уточнить стоимость ремонта','<h1>Причина поломки стиральной машины</h1><div class="article-cards">'+cards+'</div>')
     for a in articles:
         related = ''.join(f'<li><a href="/articles/{other["slug"]}/">{escape(other["heading"])}</a></li>' for other in articles if other['slug'] != a['slug'])
         body = f'<a href="/articles/">← Все статьи</a><article><h1>{escape(a["heading"])}</h1>{markdown(a["body"])}</article><div class="article-actions"><a class="btn btn-outline" href="/#prices">Посмотреть цены</a><a class="btn btn-primary" href="/#quiz">Вызвать мастера в Самаре</a></div><nav aria-label="Связанные материалы"><h2>Читайте также</h2><ul>{related}</ul></nav>'
