@@ -389,6 +389,18 @@
   .privacy-consent:focus-within{outline:2px solid #389bd3;outline-offset:2px}
 
 .header-inner{padding-inline:20px}.request-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:24px;align-items:start;margin-top:24px}.quiz-card{width:100%;min-width:0}.telegram-request{padding:24px;background:white;border:1px solid var(--border);border-radius:16px}.telegram-request .btn{white-space:normal;margin-top:20px}.max-card-close{min-width:44px;min-height:44px}#safetyWarning{padding:16px;background:#fff4d4;color:#624300;margin:16px 0}.quiz-count{position:absolute;top:-28px;right:0}.quiz-progress{overflow:visible;margin-top:32px}.quiz-summary-row span{overflow-wrap:anywhere}@media(max-width:760px){.request-layout{grid-template-columns:1fr}}
+
+.float-call{display:none!important}
+.max-fab,.telegram-fab{position:fixed;right:24px;width:64px;height:64px;padding:0;border:0;border-radius:17px;overflow:hidden;z-index:94;display:block;box-shadow:0 5px 18px rgba(16,45,85,.22);transition:transform .2s,box-shadow .2s;background:transparent}
+.telegram-fab{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.max-fab{bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+.messenger-art{display:block;width:200%;height:100%;max-width:none;object-fit:fill;pointer-events:none}
+.telegram-fab .messenger-art{margin-left:-100%}
+.max-fab:hover,.telegram-fab:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(16,45,85,.3)}
+.telegram-fab:focus-visible,.max-fab:focus-visible{outline:3px solid #9b5800;outline-offset:4px}
+.max-card{bottom:calc(176px + env(safe-area-inset-bottom,0px));right:24px;max-height:calc(100dvh - 192px - env(safe-area-inset-bottom,0px))}
+@media(max-width:600px){.max-fab,.telegram-fab{right:16px;width:56px;height:56px;border-radius:15px}.telegram-fab{bottom:calc(16px + env(safe-area-inset-bottom,0px))}.max-fab{bottom:calc(84px + env(safe-area-inset-bottom,0px))}.max-card{right:16px;bottom:calc(152px + env(safe-area-inset-bottom,0px));max-height:calc(100dvh - 168px - env(safe-area-inset-bottom,0px))}}
+@media(prefers-reduced-motion:reduce){.max-fab,.telegram-fab{transition:none}}
 </style>
 </head>
 <body>
@@ -898,11 +910,11 @@
 </a>
 
 
+<!-- CONTACT WIDGETS -->
 <!-- MAX: after receiving a real profile link, set MAX_PROFILE_URL in the script below. -->
 <div class="max-widget">
   <button class="max-fab" id="maxFab" type="button" aria-label="Написать мастеру в MAX" aria-expanded="false" aria-controls="maxCard">
-    <svg viewBox="0 0 40 36" aria-hidden="true"><path d="M6 2h28a4 4 0 0 1 4 4v19a4 4 0 0 1-4 4H18l-8 6v-6H6a4 4 0 0 1-4-4V6a4 4 0 0 1 4-4Z" fill="#fff"/><path d="m11 23 3.5-11 5.5 8 5.5-8 3.5 11" fill="none" stroke="#285df2" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    <span>MAX</span>
+    <img class="messenger-art" src="/assets/messenger-icons.webp" width="2048" height="1024" alt="" decoding="async">
   </button>
   <div class="max-card" id="maxCard" role="region" aria-label="Связь с мастером в MAX" hidden>
     <div class="max-card-head"><h2>Связаться через MAX</h2><button class="max-card-close" id="maxClose" type="button" aria-label="Закрыть">×</button></div>
@@ -917,6 +929,9 @@
     <div id="maxCopyStatus" class="max-status" role="status" aria-live="polite"></div>
   </div>
 </div>
+
+<a class="telegram-fab" href="https://t.me/TechnikNaDom_bot" aria-label="Оставить заявку в Telegram" title="Написать в Telegram" target="_blank" rel="noopener noreferrer"><img class="messenger-art" src="/assets/messenger-icons.webp" width="2048" height="1024" alt="" decoding="async"></a>
+<!-- END CONTACT WIDGETS -->
 
 <script>
 
