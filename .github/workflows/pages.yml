@@ -6,7 +6,7 @@ on:
     branches: [main]
     paths:
       - 'web/**'
-      - 'deploy/build_pages.py'
+      - 'deploy/**'
       - 'content/**'
       - 'tests/**'
       - '.github/workflows/pages.yml'

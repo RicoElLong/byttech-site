@@ -36,7 +36,12 @@ def markdown(text):
     return '\n'.join(output)
 
 
-def build(destination: Path, *, production=False):
+def build(destination: Path, *, production=False, content_file=None):
+    import sys
+    module_dir = str(Path(__file__).resolve().parent)
+    if module_dir not in sys.path: sys.path.insert(0, module_dir)
+    from content_model import load_bundle, render_home, extract
+    bundle = load_bundle(ROOT, content_file)
     if destination.exists():
         raise ValueError('Use a new output directory.')
     base = os.getenv('SITE_URL', '').rstrip('/')
@@ -49,7 +54,7 @@ def build(destination: Path, *, production=False):
     endpoint = os.getenv('REQUEST_API_URL', '').strip()
     approved = os.getenv('WEB_DOCUMENTS_CONFIRMED') == '1'
     fields = {f'OWNER_{key}': os.getenv(f'OWNER_{key}', '').strip() for key in ('NAME','INN','ADDRESS','PHONE','EMAIL')}
-    fields['OWNER_PHONE'] = fields['OWNER_PHONE'] or PUBLIC_PHONE
+    fields['OWNER_PHONE'] = fields['OWNER_PHONE'] or bundle['site']['global']['phoneRaw']
     if not re.fullmatch(r'\+7\d{10}', fields['OWNER_PHONE']):
         raise ValueError('OWNER_PHONE must use +7XXXXXXXXXX.')
     if endpoint:
@@ -63,10 +68,12 @@ def build(destination: Path, *, production=False):
     has_email = bool(fields['OWNER_EMAIL'])
     has_owner = all(fields.values())
     fields['OWNER_PHONE_E164'] = fields['OWNER_PHONE']
+    if not os.getenv('OWNER_PHONE'):
+        fields['OWNER_PHONE'] = bundle['site']['global']['phone']
     for key in fields:
         if not fields[key]:
             fields[key] = 'Будет указан до включения приёма заявок'
-    home = (WEB_ROOT / 'index.html').read_text()
+    home = render_home((WEB_ROOT / 'index.html').read_text(), bundle['site'])
     if not has_owner:
         home = re.sub(r'<p class="footer-legal">.*?</p>', '<p class="footer-legal">Приём заявок на сайте отключён. Реквизиты и документы ожидают подтверждения.</p>', home, flags=re.S)
     if endpoint:
@@ -79,7 +86,7 @@ def build(destination: Path, *, production=False):
     # Article navigation is absolute within the site, never relative to the article.
     article_header = re.sub(r'href="#([^\"]*)"', r'href="/#\1"', header).replace('href="/articles/"', 'href="/articles/" aria-current="page"')
     article_footer = re.sub(r'href="#([^\"]*)"', r'href="/#\1"', footer)
-    articles = json.loads((ROOT / 'content/articles.json').read_text())
+    articles = bundle['articles']
     extra = '<style>.article-content{max-width:820px;margin:40px auto;padding:0 20px 40px;overflow-wrap:anywhere}.article-content h1{font-size:clamp(28px,4vw,44px);line-height:1.2;margin:24px 0}.article-content h2{font-size:25px;margin:32px 0 16px}.article-content p,.article-content ul,.article-content ol{margin:16px 0}.article-content ul,.article-content ol{padding-left:25px}.article-content a:not(.btn){color:var(--blue-dark);text-decoration:underline}.article-content blockquote{border-left:4px solid var(--blue);padding-left:20px}.article-cards{display:grid;gap:20px}.article-card{padding:24px;border:1px solid var(--border);border-radius:16px}.article-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}.article-actions .btn{white-space:normal}[aria-current=page]{text-decoration:underline}@media(max-width:600px){.article-actions .btn{width:100%}}</style>'
     def page(title, description, body):
         return f'<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{escape(title)}</title><meta name="description" content="{escape(description,quote=True)}">{style}{extra}</head><body>{article_header}<main class="article-content">{body}</main>{article_footer}{widgets}{scripts}</body></html>'
@@ -118,6 +125,10 @@ def build(destination: Path, *, production=False):
     for filename,source in output.items():
         target=destination/filename;target.parent.mkdir(parents=True,exist_ok=True);target.write_text(source,encoding='utf-8')
     import shutil
+    shutil.copytree(WEB_ROOT / 'admin', destination / 'admin')
+    (destination / 'admin/defaults.json').write_text(json.dumps(bundle,ensure_ascii=False),encoding='utf-8')
+    schema={'version':1,'site':extract((WEB_ROOT/'index.html').read_text()),'articles':[{'slug':'novaya-statya','heading':'Новая статья','title':'Новая статья | БытТех','description':'Описание','body':'Текст'}]}
+    (destination / 'admin/schema.json').write_text(json.dumps(schema,ensure_ascii=False),encoding='utf-8')
     if (WEB_ROOT / 'assets').is_dir():
         shutil.copytree(WEB_ROOT / 'assets', destination / 'assets')
 
@@ -127,5 +138,6 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('destination',nargs='?',type=Path,default=Path('_site'))
     parser.add_argument('--production',action='store_true')
+    parser.add_argument('--content',type=Path,help='Validated editor JSON export')
     args=parser.parse_args()
-    build(args.destination,production=args.production)
+    build(args.destination,production=args.production,content_file=args.content)
