@@ -31,67 +31,75 @@ node --check web/request-form.js
 
 ## Как сайт связан с сервером
 
-Текущая версия — серверные HTML-шаблоны. `webapp.py` из репозитория бота
-подставляет подтверждённые реквизиты вместо `{{OWNER_*}}`, выдаёт страницы
-и принимает заявки на том же домене. Контракт формы и версия согласия
+Текущая версия — серверные HTML-шаблоны. Сборщик подставляет подтверждённые реквизиты вместо `{{OWNER_*}}`;
+отдельный совместимый API из репозитория бота принимает заявки по HTTPS. Контракт формы и версия согласия
 `pd-2026-11-09-v1` сохранены без изменений.
 
-## Публикация на GitHub Pages
+## Статьи, сборка и локальная проверка
 
-В **Settings → Pages** выберите источник **GitHub Actions**. Пока
-`REQUEST_API_URL` не задан, сайт публикуется с кнопками звонка. По умолчанию
-используется публичный номер с сайта `bot-tech`. Его можно изменить через
-`OWNER_PHONE` в переменных GitHub Actions.
+Единый источник пяти материалов — `content/articles.json`. Сборщик
+`deploy/build_pages.py` создаёт каталог и отдельные HTML-страницы из общего
+оформления главной. Новая публикация добавляется одной записью в JSON.
+Поддерживаемые блоки текста: абзацы, заголовки `###`, списки, цитаты, ссылки
+и жирный текст. HTML из данных не исполняется.
 
-Для публикации с формой в **Settings → Secrets and variables → Actions →
-Variables** задайте подтверждённые
-публичные реквизиты `OWNER_NAME`, `OWNER_INN`, `OWNER_ADDRESS`,
-`OWNER_PHONE` (в формате `+7XXXXXXXXXX`), `OWNER_EMAIL` и полный HTTPS-адрес
-обработчика `REQUEST_API_URL`, заканчивающийся на `/api/requests`.
+```sh
+python3 -m unittest discover -s tests -v
+node --check web/request-form.js
+python3 deploy/build_pages.py /tmp/byttech-review
+python3 -m http.server 8010 --bind 127.0.0.1 --directory /tmp/byttech-review
+# В другом терминале; нужны Playwright и Chromium:
+REVIEW_URL=http://127.0.0.1:8010 node tests/browser-smoke.cjs
+```
 
-На сервере заявок разрешите `WEB_ALLOWED_ORIGINS=https://ricoellong.github.io`
-(либо origin настроенного домена сайта, без пути). GitHub Pages публикует
-страницы, а совместимый HTTPS-сервер принимает заявки, хранит их и ставит
-уведомления в очередь. Токен Telegram и доступ к базе нужны только серверу.
+Каталог сборки должен быть новым. Исходные `web/` содержат шаблоны реквизитов;
+напрямую их не публиковать. Без API сборка сохраняет форму с отключённой
+отправкой, ссылки на документы и самостоятельный переход в Telegram.
+Значения реквизитов не выдумываются. Снимки проверки: `artifacts/`.
 
-Запустите workflow **Publish to GitHub Pages** в разделе **Actions**.
-Он собирает страницы из `web/`, подставляет реквизиты, преобразует ссылки
-для публикации в подпапке и подключает форму к указанному API. Если задан
-адрес API, сборка требует заполнения всех реквизитов.
-После первого запуска изменения страниц в ветке `main` публикуются автоматически.
-Ожидаемый адрес сайта: <https://ricoellong.github.io/byttech-site/>.
+## Подготовка production без публикации
 
-## Развёртывание сервера заявок
+Нужен подтверждённый `SITE_URL`: полный HTTPS-адрес сайта, включая подпапку,
+если она есть. Только из него строятся canonical, sitemap.xml и robots.txt.
+Без него обычная review-сборка работает без canonical/sitemap, а
+`--production` завершается ошибкой. Тестовый адрес в production не подставляется.
 
-Если совместимого API ещё нет, его можно развернуть на VPS. Используйте
-отдельный каталог запуска:
+Для включения формы отдельно нужны подтверждённые публичные `OWNER_NAME`,
+`OWNER_INN`, `OWNER_ADDRESS`, `OWNER_PHONE` (`+7XXXXXXXXXX`), `OWNER_EMAIL`,
+`WEB_DOCUMENTS_CONFIRMED=1` и `REQUEST_API_URL` вида `https://домен/api/requests`.
+Само заполнение URL не включает сервер: браузер дополнительно проверяет
+`GET /api/requests/config`. До подтверждения схемы обработки и документов
+переменную подтверждения не устанавливать. Токен и пароль не нужны сборщику.
 
-1. Из корня `byttech-site` соберите релиз в новом каталоге вне репозитория.
-   Нужны Git и Python 3.12+. Скрипт берёт страницы из текущей рабочей копии
-   `byttech-site` и скачивает совместимую версию сервера по точному коммиту.
+Workflow Pages выполняет тесты до сборки. По поручению владельца адрес
+публикации задан как `https://ricoellong.github.io/byttech-site/`. Приём заявок
+в workflow явно отключён: `REQUEST_API_URL` пуст, `WEB_DOCUMENTS_CONFIRMED=0`.
+Реквизиты могут передаваться через Variables; включение API требует отдельной
+проверки документов и изменения этих настроек workflow.
 
-   ```sh
-   python3 deploy/prepare_release.py /srv/byttech-release
-   cd /srv/byttech-release
-   python3 -m venv .venv
-   .venv/bin/python -m pip install -r requirements.txt
-   ```
+## Сервер обратной связи
 
-2. Настройте `.env.local` каталога запуска по
-   [инструкции сервера](https://github.com/RicoElLong/bot-tech/blob/62bbcbb00bd179b474e70f12fa826c7f308fb80f/README.md).
-   Укажите `WEB_ENABLED=1`, публичный HTTPS-адрес в `WEB_ALLOWED_ORIGINS`,
-   подтверждённые реквизиты и настройки Telegram. Задайте абсолютный
-   `DATABASE_PATH` вне каталога релиза, чтобы обновления использовали ту же базу.
-3. Настройте HTTPS-прокси по
-   [примеру Nginx](https://github.com/RicoElLong/bot-tech/blob/62bbcbb00bd179b474e70f12fa826c7f308fb80f/deploy/nginx.conf.example).
-   Запустите `.venv/bin/python bot.py` как службу из каталога релиза. При
-   переезде остановите прежний процесс бота перед запуском с тем же токеном.
-4. Проверьте `/api/health`, все страницы и тестовую заявку до переключения
-   рабочего домена.
+Используется отдельный API из `RicoElLong/bot-tech`, не старый запуск `bot.py`.
+Сверка API и инструкции: [IMPLEMENTATION.md](IMPLEMENTATION.md).
+Серверное изменение сохранено в отдельном checkout и как review-патч
+`deploy/patches/bot-tech-requests.patch` относительно коммита
+`c05bd8c81593a34b04eb6064278cbe8998788306`.
 
-Таким образом, изменения страниц ведутся в `byttech-site`, а серверный код —
-в `bot-tech`. Развёртывание связывает две проверенные версии. При этом перенос
-исходников не требует изменений работающего бота.
+```sh
+# После ревью и применения патча в bot-tech:
+python3 deploy/prepare_release.py /tmp/byttech-release --backend-dir /workspace/bot-tech
+cd /tmp/byttech-release
+python3 -m venv .venv
+.venv/bin/pip install -r requirements-web.txt
+# Настроить защищённые переменные сервера по IMPLEMENTATION.md, затем:
+.venv/bin/uvicorn web_api:app --host 127.0.0.1 --port 8001
+```
+
+Для production-сборки релиза добавить `--production`. `site/` — отдельный
+публичный корень для HTTPS-прокси; код и база лежат вне него. Образец
+`deploy/nginx.conf.example` предназначен для блока сервера с уже настроенным
+сертификатом. Приём реальных данных и отправка Telegram в этой задаче не
+включаются. Старый сервер, который отправлял контакты в Telegram, не использовать.
 
 ## Ограничения текущего переноса
 

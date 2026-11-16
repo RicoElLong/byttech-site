@@ -146,7 +146,7 @@
   .section-head p{color:var(--text-2);font-size:16px;line-height:1.7}
 
   /* REVEAL */
-  .reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+  .reveal{opacity:1;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
   .reveal.in{opacity:1;transform:translateY(0)}
 
   /* FEATURES */
@@ -387,6 +387,8 @@
   .privacy-consent a,.privacy-note a{color:#006895;text-decoration:underline;text-underline-offset:2px}
   .privacy-note{font-size:12px;color:#4c6071;line-height:1.55}
   .privacy-consent:focus-within{outline:2px solid #389bd3;outline-offset:2px}
+
+.header-inner{padding-inline:20px}.request-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:24px;align-items:start;margin-top:24px}.quiz-card{width:100%;min-width:0}.telegram-request{padding:24px;background:white;border:1px solid var(--border);border-radius:16px}.telegram-request .btn{white-space:normal;margin-top:20px}.max-card-close{min-width:44px;min-height:44px}#safetyWarning{padding:16px;background:#fff4d4;color:#624300;margin:16px 0}.quiz-count{position:absolute;top:-28px;right:0}.quiz-progress{overflow:visible;margin-top:32px}.quiz-summary-row span{overflow-wrap:anywhere}@media(max-width:760px){.request-layout{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -395,7 +397,7 @@
 <header class="header" id="header">
   <div class="container header-inner">
     <a href="#top" class="logo" aria-label="БытТех — на главную"><img class="logo-image" src="data:image/avif;base64,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" width="350" height="93" alt="БытТех" decoding="async"></a>
-    <nav class="header-nav" id="headerNav" aria-label="Основная навигация">
+    <nav class="header-nav" id="headerNav" aria-label="Основная навигация"><a href="/articles/">Статьи</a>
       <a href="#services">Услуги и цены</a>
       <a href="#honesty">Честность</a>
       <a href="#discounts">Скидки</a>
@@ -415,16 +417,17 @@
   </div>
 </header>
 
+<main>
 <!-- HERO -->
 <section class="hero" id="top" aria-labelledby="heroTitle">
   <div class="container hero-grid">
     <div class="hero-copy">
       <span class="hero-badge">Ремонт стиральных машин · Самара</span>
-      <h1 id="heroTitle">Ремонт <br>стиральных машин <span>на дому</span></h1>
+      <h1 id="heroTitle">Ремонт стиральных машин <span>в Самаре</span></h1>
       <p class="hero-lead"><b>Олег — частный мастер.</b> Ремонтирую стиральные машины в Самаре. Помогу оценить стоимость по телефону — окончательная цена после диагностики. Гарантийные условия фиксируются в документах по ремонту.</p>
       <div class="hero-cta">
         <a href="#quiz" class="btn btn-primary btn-lg">Вызвать мастера</a>
-        <a href="#prices" class="btn btn-outline btn-lg">Узнать цену</a>
+        <a href="#prices" class="btn btn-outline btn-lg">Узнать стоимость</a>
       </div>
     </div>
     <div class="hero-visual">
@@ -440,75 +443,22 @@
 
 <!-- QUIZ -->
 <section class="quiz-section">
-  <div class="container">
-    <div class="quiz-card" id="quiz">
+  <div class="container"><h2>Оставить заявку</h2><div class="request-layout">
+    <div class="quiz-card" id="quiz" data-api="" data-config=""><p id="intakeStatus" role="status">Приём заявок пока отключён: сведения об операторе и обработке данных ожидают подтверждения.</p><p id="safetyWarning" role="status" hidden></p><noscript>Для пошаговой формы нужен JavaScript. Позвоните мастеру или обратитесь в Telegram.</noscript>
       <div class="quiz-progress">
         <span class="quiz-count" id="quizCount">Шаг 1 из 3</span>
         <div class="quiz-progress-fill" id="quizProgress"></div>
       </div>
 
-      <div class="quiz-step active" data-step="1">
-        <h3 tabindex="-1">Какая у вас марка машинки?</h3>
-        <p>Если не знаете точно — выберите «Другая»</p>
-        <div class="quiz-grid" data-field="brand">
-          <button type="button" class="quiz-opt" data-value="Bosch">Bosch</button>
-          <button type="button" class="quiz-opt" data-value="LG">LG</button>
-          <button type="button" class="quiz-opt" data-value="Samsung">Samsung</button>
-          <button type="button" class="quiz-opt" data-value="Indesit">Indesit</button>
-          <button type="button" class="quiz-opt" data-value="Ariston">Ariston</button>
-          <button type="button" class="quiz-opt" data-value="Siemens">Siemens</button>
-          <button type="button" class="quiz-opt" data-value="Electrolux">Electrolux</button>
-          <button type="button" class="quiz-opt" data-value="Whirlpool">Whirlpool</button>
-          <button type="button" class="quiz-opt" data-value="Atlant">Atlant</button>
-          <button type="button" class="quiz-opt" data-value="Zanussi">Zanussi</button>
-          <button type="button" class="quiz-opt" data-value="Haier">Haier</button>
-          <button type="button" class="quiz-opt" data-value="Beko">Beko</button>
-          <button type="button" class="quiz-opt" data-value="Candy">Candy</button>
-          <button type="button" class="quiz-opt" data-value="Другая">Другая / не знаю</button>
-        </div>
-      </div>
-
-      <div class="quiz-step" data-step="2">
-        <h3 tabindex="-1">Что случилось с машинкой?</h3>
-        <p>Выберите одну основную проблему</p>
-        <div class="quiz-grid" data-field="problem">
-          <button type="button" class="quiz-opt" data-value="Не сливает воду"><span class="emoji">💧</span>Не сливает воду</button>
-          <button type="button" class="quiz-opt" data-value="Не набирает воду"><span class="emoji">🚰</span>Не набирает воду</button>
-          <button type="button" class="quiz-opt" data-value="Не отжимает"><span class="emoji">🔄</span>Не отжимает</button>
-          <button type="button" class="quiz-opt" data-value="Не крутится барабан"><span class="emoji">🌀</span>Не крутится барабан</button>
-          <button type="button" class="quiz-opt" data-value="Не включается"><span class="emoji">⚡</span>Не включается</button>
-          <button type="button" class="quiz-opt" data-value="Не греет воду"><span class="emoji">🌡️</span>Не греет воду</button>
-          <button type="button" class="quiz-opt" data-value="Не открывается дверца"><span class="emoji">🚪</span>Не открывается дверца</button>
-          <button type="button" class="quiz-opt" data-value="Шумит при отжиме"><span class="emoji">🔊</span>Шумит при отжиме</button>
-          <button type="button" class="quiz-opt" data-value="Протекает"><span class="emoji">💦</span>Протекает</button>
-          <button type="button" class="quiz-opt" data-value="Показывает ошибку"><span class="emoji">❗</span>Показывает ошибку</button>
-          <button type="button" class="quiz-opt" data-value="Выбивает пробки"><span class="emoji">🔌</span>Выбивает пробки</button>
-          <button type="button" class="quiz-opt" data-value="Другое"><span class="emoji">❓</span>Другое / не знаю</button>
-        </div>
-      </div>
-
+<div class="quiz-step active" data-step="1"><h3 tabindex="-1">Что случилось с машиной?</h3><div class="quiz-grid" data-field="problem"><button type="button" class="quiz-opt" aria-pressed="false" data-value="Не сливает воду">Не сливает воду</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Не набирает воду">Не набирает воду</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Не отжимает">Не отжимает</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Не крутится барабан">Не крутится барабан</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Не включается">Не включается</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Не греет воду">Не греет воду</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Протекает">Протекает</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Шумит / вибрирует">Шумит / вибрирует</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Не открывается дверца">Не открывается дверца</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Показывает ошибку">Показывает ошибку</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Выбивает автомат">Выбивает автомат</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Другое / не знаю">Другое / не знаю</button></div></div>
+<div class="quiz-step" data-step="2"><h3 tabindex="-1">Какая у вас марка машинки?</h3><div class="quiz-grid" data-field="brand"><button type="button" class="quiz-opt" aria-pressed="false" data-value="Bosch">Bosch</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="LG">LG</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Samsung">Samsung</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Indesit">Indesit</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Ariston">Ariston</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Beko">Beko</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Candy">Candy</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Electrolux">Electrolux</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Haier">Haier</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Siemens">Siemens</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Whirlpool">Whirlpool</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Atlant">Atlant</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Zanussi">Zanussi</button><button type="button" class="quiz-opt" aria-pressed="false" data-value="Другая / не знаю">Другая / не знаю</button></div></div>
       <div class="quiz-step" data-step="3">
-        <h3>Куда отправить расчёт?</h3>
+        <h3 tabindex="-1">Как с вами связаться?</h3>
         <p>Мастер свяжется с вами, чтобы уточнить стоимость и согласовать время визита</p>
         <div class="quiz-form">
-          <input type="text" name="quizName" placeholder="Ваше имя" autocomplete="name" maxlength="100" required />
-          <input type="tel" name="quizPhone" placeholder="Телефон" autocomplete="tel" inputmode="tel" maxlength="40" required />
-          <div class="quiz-preferred">
-            <label class="quiz-field-label" for="preferredDate">Когда удобнее приехать?</label>
-            <div class="quiz-datetime">
-              <div><label class="quiz-field-hint" for="preferredDate">Дата</label><input type="date" id="preferredDate" name="preferredDate" required /></div>
-              <div><label class="quiz-field-hint" for="preferredTime">Время (Самара)</label>
-                <select id="preferredTime" name="preferredTime" required>
-                  <option value="">Выберите время</option>
-                  <option value="08:00">08:00–10:00</option><option value="10:00">10:00–12:00</option>
-                  <option value="12:00">12:00–14:00</option><option value="14:00">14:00–16:00</option>
-                  <option value="16:00">16:00–18:00</option><option value="18:00">18:00–20:00</option>
-                </select>
-              </div>
-            </div>
-            <p class="quiz-field-note">Это пожелание по времени: мастер подтвердит визит после звонка.</p>
-          </div>
-          <textarea name="quizComment" placeholder="Комментарий (необязательно)" maxlength="2000" rows="2"></textarea>
+          <label for="quizName">Ваше имя</label><input type="text" name="quizName" placeholder="Ваше имя" autocomplete="name" id="quizName" maxlength="80" required />
+          <label for="quizPhone">Телефон</label><input type="tel" name="quizPhone" placeholder="Телефон" autocomplete="tel" inputmode="tel" id="quizPhone" maxlength="24" required />
+          <label for="quizComment">Модель, код ошибки или удобное время (необязательно)</label><textarea id="quizComment" name="quizComment" placeholder="Комментарий (необязательно)" maxlength="1000" rows="2"></textarea>
           <div class="privacy-consent">
             <input type="checkbox" id="personalDataConsent" name="personalDataConsent" required />
             <label for="personalDataConsent">Даю отдельное <a href="/consent" target="_blank" rel="noopener noreferrer">согласие на обработку персональных данных</a> для ответа на заявку и согласования ремонта. Без рекламных рассылок.</label>
@@ -526,14 +476,13 @@
               <polyline points="20 6 9 17 4 12"/>
             </svg>
           </div>
-          <h3>Заявка отправлена!</h3>
+          <h3 tabindex="-1">Заявка отправлена!</h3>
           <p style="color:var(--muted);margin-bottom:20px;font-size:14px">Мастер свяжется с вами для подтверждения заявки.</p>
           <div class="quiz-summary">
             <div class="quiz-summary-row"><span>Номер заявки</span><span id="sumRequest">—</span></div>
             <div class="quiz-summary-row"><span>Марка</span><span id="sumBrand">—</span></div>
             <div class="quiz-summary-row"><span>Поломка</span><span id="sumProblem">—</span></div>
-            <div class="quiz-summary-row"><span>Желаемое время</span><span id="sumPreferred">—</span></div>
-            <div class="quiz-summary-row"><span>Диагностика</span><span style="color:var(--green)">Бесплатно</span></div>
+            <div class="quiz-summary-row"><span>Диагностика</span><span style="color:var(--green)">Бесплатно при последующем ремонте</span></div>
           </div>
           <a href="tel:{{OWNER_PHONE_E164}}" class="btn btn-primary btn-block" style="margin-top:8px">
             Позвонить: {{OWNER_PHONE}}
@@ -545,6 +494,73 @@
         <button type="button" class="btn btn-outline" id="quizBack" disabled>← Назад</button>
         <button type="button" class="btn btn-primary" id="quizNext" disabled>Далее →</button>
       </div>
+    </div><aside class="telegram-request"><h3>Оставить заявку в Telegram</h3><p>Самостоятельный способ обращения. Данные этой формы в Telegram не передаются.</p><a class="btn btn-primary" href="https://t.me/TechnikNaDom_bot" rel="noopener noreferrer">Оставить заявку в Telegram</a></aside></div>
+  </div>
+</section>
+
+<!-- PRICES / SERVICES -->
+<section class="section service-section" id="services" aria-labelledby="servicesTitle">
+  <span class="service-anchor" id="prices" aria-hidden="true"></span>
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="section-label">Услуги и цены · Самара</span>
+      <h2 id="servicesTitle">Ремонт стиральных машин <em>на дому</em></h2>
+      <p>Не знаете причину поломки? Выберите, что происходит с машинкой. Это стартовая стоимость работы — точную цену назову после диагностики и согласую до ремонта.</p>
+    </div>
+    <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true"><defs>
+      <symbol id="service-icon-drum" viewBox="0 0 32 32"><rect x="5" y="3.5" width="22" height="25" rx="4"/><path d="M5 10h22M9 7h1m12 0h1"/><circle cx="16" cy="19" r="5.5"/><path d="m14.5 17 3 4m0-4-3 4"/></symbol>
+      <symbol id="service-icon-spin" viewBox="0 0 32 32"><path d="M6 14a10 10 0 0 1 17-6l3 3m0-5v5h-5M26 18a10 10 0 0 1-17 6l-3-3m0 5v-5h5M16 10c-1.5 2.5-4 5-4 7.2a4 4 0 0 0 8 0c0-2.2-2.5-4.7-4-7.2Z"/></symbol>
+      <symbol id="service-icon-leak" viewBox="0 0 32 32"><path d="M22 16c-1.3-3.8-4.3-7.8-7-12-3.5 5.1-8 9.4-8 14.4a8 8 0 0 0 11 7.4M11 19a4 4 0 0 0 4 4m9-5c-1.5 2.4-4 4.9-4 7a4 4 0 0 0 8 0c0-2.1-2.5-4.6-4-7Z"/></symbol>
+      <symbol id="service-icon-heat" viewBox="0 0 32 32"><path d="M12 19.6V7a4 4 0 0 1 8 0v12.6a7 7 0 1 1-8 0Zm8-10.6h4m-4 5h4m-4 5h4M16 14v8"/><circle cx="16" cy="25" r="2"/></symbol>
+      <symbol id="service-icon-fill" viewBox="0 0 32 32"><path d="M9 4v4m7-4v4m-9 0h11v4h5a5 5 0 0 1 5 5v2h-5v-2H8a4 4 0 0 1-4-4V9h3m13 3V9m5.5 13c-.8 1.4-2.5 2.9-2.5 4.3a2.5 2.5 0 0 0 5 0c0-1.4-1.7-2.9-2.5-4.3Z"/></symbol>
+      <symbol id="service-icon-noise" viewBox="0 0 32 32"><path d="M5 12h4l6-5v18l-6-5H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Zm14 0a6 6 0 0 1 0 8m4-12a11 11 0 0 1 0 16m3-19a15 15 0 0 1 0 22"/></symbol>
+      <symbol id="service-icon-power" viewBox="0 0 32 32"><path d="M16 4v11m6.5-7a11 11 0 1 1-13 0"/><path d="M12.5 21h7"/></symbol>
+      <symbol id="service-icon-help" viewBox="0 0 32 32"><path d="M8 23l-3 3v-6a9 9 0 0 1-2-5.5C3 9.3 8.8 5 16 5s13 4.3 13 9.5S23.2 24 16 24c-2.4 0-4.6-.4-6.5-1.3L8 23Z"/><path d="M9.5 14.5h.1m6.4 0h.1m6.4 0h.1"/></symbol>
+      <symbol id="service-icon-drain" viewBox="0 0 32 32"><path d="M4 12h24v9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3Zm2 5c2.5-2 4.3-2 6.7 0s4.2 2 6.6 0 4.2-2 6.7 0M16 3v6m-3-3 3 3 3-3m-3 18v5m-3-3 3 3 3-3"/></symbol>
+    </defs></svg>
+    <div class="services-grid reveal" role="list" aria-label="Стоимость ремонта по характеру неисправности">
+      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Не крутится барабан"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-drum"/></svg></span><h3>Не вращается барабан</h3><span class="service-price">от 1 250 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Не греет воду"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-heat"/></svg></span><h3>Не нагревает воду</h3><span class="service-price">от 1 300 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Протекает"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-leak"/></svg></span><h3>Протекает стиральная машина</h3><span class="service-price">от 1 350 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Не сливает воду"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-drain"/></svg></span><h3>Не сливает воду</h3><span class="service-price">от 1 300 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Не отжимает"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-spin"/></svg></span><h3>Не отжимает</h3><span class="service-price">от 1 400 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Шумит / вибрирует"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-noise"/></svg></span><h3>Сильно шумит</h3><span class="service-price">от 1 250 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Не включается"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-power"/></svg></span><h3>Не включается</h3><span class="service-price">от 1 300 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
+      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Не набирает воду"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-fill"/></svg></span><h3>Не набирает воду</h3><span class="service-price">от 1 300 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
+    </div>
+    <div class="service-action reveal">
+      <a class="service-link" href="#quiz" data-service-problem="Другое / не знаю">
+        <span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-help"/></svg></span>
+        <p><strong>Другая неисправность</strong><br>Расскажите, что случилось с машинкой.</p>
+        <span class="service-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+    <div class="section-head center reveal service-subhead">
+      <span class="section-label">Дополнительный прайс</span>
+      <h2>Стоимость <em>отдельных работ</em></h2>
+      <p>Если причина уже известна, посмотрите примерную стоимость конкретной операции.</p>
+    </div>
+    <div class="price-grid reveal">
+      <div class="price-card"><h3>Диагностика в черте города</h3><div class="price-val">от 500 ₽</div></div>
+      <div class="price-card"><h3>Диагностика при последующем ремонте</h3><div class="price-val free">бесплатно</div></div>
+      <div class="price-card"><h3>Ремонт электроники</h3><div class="price-val">от 2 600 ₽</div></div>
+      <div class="price-card"><h3>Замена подшипников</h3><div class="price-val">от 4 000 ₽</div></div>
+      <div class="price-card"><h3>Замена амортизаторов</h3><div class="price-val">от 1 600 ₽</div></div>
+      <div class="price-card"><h3>Замена манжеты люка</h3><div class="price-val">от 1 500 ₽</div></div>
+      <div class="price-card"><h3>Замена ТЭНа</h3><div class="price-val">от 1 000 ₽</div></div>
+      <div class="price-card"><h3>Замена УБЛ (замок люка)</h3><div class="price-val">от 1 000 ₽</div></div>
+      <div class="price-card"><h3>Замена ручки дверцы</h3><div class="price-val">от 1 000 ₽</div></div>
+      <div class="price-card"><h3>Замена ремня привода</h3><div class="price-val">от 800 ₽</div></div>
+      <div class="price-card"><h3>Извлечение постороннего предмета</h3><div class="price-val">от 1 600 ₽</div></div>
+    </div>
+    <div class="price-note reveal">
+      <p><strong>Окончательная стоимость зависит от модели, состояния техники и сложности ремонта.</strong></p>
+      <ul>
+        <li>Стоимость запчастей рассчитывается отдельно.</li>
+        <li>Диагностика при последующем ремонте бесплатна.</li>
+        <li>Цена согласовывается с клиентом до начала работ.</li>
+      </ul>
+      <p>Цены ориентировочные, указаны «от» и не являются публичной офертой.</p>
     </div>
   </div>
 </section>
@@ -708,73 +724,6 @@
   </div>
 </section>
 
-<!-- PRICES / SERVICES -->
-<section class="section service-section" id="services" aria-labelledby="servicesTitle">
-  <span class="service-anchor" id="prices" aria-hidden="true"></span>
-  <div class="container">
-    <div class="section-head center reveal">
-      <span class="section-label">Услуги и цены · Самара</span>
-      <h2 id="servicesTitle">Ремонт стиральных машин <em>на дому</em></h2>
-      <p>Не знаете причину поломки? Выберите, что происходит с машинкой. Это стартовая стоимость работы — точную цену назову после диагностики и согласую до ремонта.</p>
-    </div>
-    <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true"><defs>
-      <symbol id="service-icon-drum" viewBox="0 0 32 32"><rect x="5" y="3.5" width="22" height="25" rx="4"/><path d="M5 10h22M9 7h1m12 0h1"/><circle cx="16" cy="19" r="5.5"/><path d="m14.5 17 3 4m0-4-3 4"/></symbol>
-      <symbol id="service-icon-spin" viewBox="0 0 32 32"><path d="M6 14a10 10 0 0 1 17-6l3 3m0-5v5h-5M26 18a10 10 0 0 1-17 6l-3-3m0 5v-5h5M16 10c-1.5 2.5-4 5-4 7.2a4 4 0 0 0 8 0c0-2.2-2.5-4.7-4-7.2Z"/></symbol>
-      <symbol id="service-icon-leak" viewBox="0 0 32 32"><path d="M22 16c-1.3-3.8-4.3-7.8-7-12-3.5 5.1-8 9.4-8 14.4a8 8 0 0 0 11 7.4M11 19a4 4 0 0 0 4 4m9-5c-1.5 2.4-4 4.9-4 7a4 4 0 0 0 8 0c0-2.1-2.5-4.6-4-7Z"/></symbol>
-      <symbol id="service-icon-heat" viewBox="0 0 32 32"><path d="M12 19.6V7a4 4 0 0 1 8 0v12.6a7 7 0 1 1-8 0Zm8-10.6h4m-4 5h4m-4 5h4M16 14v8"/><circle cx="16" cy="25" r="2"/></symbol>
-      <symbol id="service-icon-fill" viewBox="0 0 32 32"><path d="M9 4v4m7-4v4m-9 0h11v4h5a5 5 0 0 1 5 5v2h-5v-2H8a4 4 0 0 1-4-4V9h3m13 3V9m5.5 13c-.8 1.4-2.5 2.9-2.5 4.3a2.5 2.5 0 0 0 5 0c0-1.4-1.7-2.9-2.5-4.3Z"/></symbol>
-      <symbol id="service-icon-noise" viewBox="0 0 32 32"><path d="M5 12h4l6-5v18l-6-5H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Zm14 0a6 6 0 0 1 0 8m4-12a11 11 0 0 1 0 16m3-19a15 15 0 0 1 0 22"/></symbol>
-      <symbol id="service-icon-power" viewBox="0 0 32 32"><path d="M16 4v11m6.5-7a11 11 0 1 1-13 0"/><path d="M12.5 21h7"/></symbol>
-      <symbol id="service-icon-help" viewBox="0 0 32 32"><path d="M8 23l-3 3v-6a9 9 0 0 1-2-5.5C3 9.3 8.8 5 16 5s13 4.3 13 9.5S23.2 24 16 24c-2.4 0-4.6-.4-6.5-1.3L8 23Z"/><path d="M9.5 14.5h.1m6.4 0h.1m6.4 0h.1"/></symbol>
-      <symbol id="service-icon-drain" viewBox="0 0 32 32"><path d="M4 12h24v9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3Zm2 5c2.5-2 4.3-2 6.7 0s4.2 2 6.6 0 4.2-2 6.7 0M16 3v6m-3-3 3 3 3-3m-3 18v5m-3-3 3 3 3-3"/></symbol>
-    </defs></svg>
-    <div class="services-grid reveal" role="list" aria-label="Стоимость ремонта по характеру неисправности">
-      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Не крутится барабан"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-drum"/></svg></span><h3>Не вращается барабан</h3><span class="service-price">от 1 250 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
-      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Не греет воду"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-heat"/></svg></span><h3>Не нагревает воду</h3><span class="service-price">от 1 300 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
-      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Протекает"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-leak"/></svg></span><h3>Протекает стиральная машина</h3><span class="service-price">от 1 350 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
-      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Не сливает воду"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-drain"/></svg></span><h3>Не сливает воду</h3><span class="service-price">от 1 300 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
-      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Не отжимает"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-spin"/></svg></span><h3>Не отжимает</h3><span class="service-price">от 1 400 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
-      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Шумит при отжиме"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-noise"/></svg></span><h3>Сильно шумит</h3><span class="service-price">от 1 250 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
-      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Не включается"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-power"/></svg></span><h3>Не включается</h3><span class="service-price">от 1 300 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
-      <div class="service-row" role="listitem"><a class="service-link" href="#quiz" data-service-problem="Не набирает воду"><span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-fill"/></svg></span><h3>Не набирает воду</h3><span class="service-price">от 1 300 ₽</span><span class="service-arrow" aria-hidden="true">→</span></a></div>
-    </div>
-    <div class="service-action reveal">
-      <a class="service-link" href="#quiz" data-service-problem="Другое">
-        <span class="service-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#service-icon-help"/></svg></span>
-        <p><strong>Другая неисправность</strong><br>Расскажите, что случилось с машинкой.</p>
-        <span class="service-arrow" aria-hidden="true">→</span>
-      </a>
-    </div>
-    <div class="section-head center reveal service-subhead">
-      <span class="section-label">Дополнительный прайс</span>
-      <h2>Стоимость <em>отдельных работ</em></h2>
-      <p>Если причина уже известна, посмотрите примерную стоимость конкретной операции.</p>
-    </div>
-    <div class="price-grid reveal">
-      <div class="price-card"><h3>Диагностика в черте города</h3><div class="price-val">от 500 ₽</div></div>
-      <div class="price-card"><h3>Диагностика при последующем ремонте</h3><div class="price-val free">бесплатно</div></div>
-      <div class="price-card"><h3>Ремонт электроники</h3><div class="price-val">от 2 600 ₽</div></div>
-      <div class="price-card"><h3>Замена подшипников</h3><div class="price-val">от 4 000 ₽</div></div>
-      <div class="price-card"><h3>Замена амортизаторов</h3><div class="price-val">от 1 600 ₽</div></div>
-      <div class="price-card"><h3>Замена манжеты люка</h3><div class="price-val">от 1 500 ₽</div></div>
-      <div class="price-card"><h3>Замена ТЭНа</h3><div class="price-val">от 1 000 ₽</div></div>
-      <div class="price-card"><h3>Замена УБЛ (замок люка)</h3><div class="price-val">от 1 000 ₽</div></div>
-      <div class="price-card"><h3>Замена ручки дверцы</h3><div class="price-val">от 1 000 ₽</div></div>
-      <div class="price-card"><h3>Замена ремня привода</h3><div class="price-val">от 800 ₽</div></div>
-      <div class="price-card"><h3>Извлечение постороннего предмета</h3><div class="price-val">от 1 600 ₽</div></div>
-    </div>
-    <div class="price-note reveal">
-      <p><strong>Окончательная стоимость зависит от модели, состояния техники и сложности ремонта.</strong></p>
-      <ul>
-        <li>Стоимость запчастей рассчитывается отдельно.</li>
-        <li>Диагностика при последующем ремонте бесплатна.</li>
-        <li>Цена согласовывается с клиентом до начала работ.</li>
-      </ul>
-      <p>Цены ориентировочные, указаны «от» и не являются публичной офертой.</p>
-    </div>
-  </div>
-</section>
-
 <!-- COMPLAINTS -->
 <section class="section section-alt">
   <div class="container">
@@ -902,6 +851,7 @@
   </div>
 </section>
 
+</main>
 <!-- FOOTER -->
 <footer class="footer">
   <div class="container">

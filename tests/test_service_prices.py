@@ -10,7 +10,7 @@ class ServicePricesTests(unittest.TestCase):
         html = HTML.read_text(encoding="utf-8")
         self.assertIn('id="services"', html)
         self.assertIn('id="prices"', html)
-        section = html.split('<!-- PRICES / SERVICES -->', 1)[1].split('<!-- COMPLAINTS -->', 1)[0]
+        section = html.split('<!-- PRICES / SERVICES -->', 1)[1].split('</section>', 1)[0]
         rows = re.findall(r'<div class="service-row" role="listitem">(.+?)</div>', section)
         self.assertEqual(len(rows), 8)
         expected = (
@@ -30,14 +30,14 @@ class ServicePricesTests(unittest.TestCase):
 
     def test_detailed_work_prices_and_original_features_preserved(self):
         html = HTML.read_text(encoding="utf-8")
-        section = html.split('<!-- PRICES / SERVICES -->', 1)[1].split('<!-- COMPLAINTS -->', 1)[0]
+        section = html.split('<!-- PRICES / SERVICES -->', 1)[1].split('</section>', 1)[0]
         self.assertEqual(section.count('class="price-card"'), 11)
         self.assertIn("Диагностика при последующем ремонте", section)
         self.assertIn("Замена подшипников", section)
         self.assertIn('class="price-val free">бесплатно', section)
         self.assertIn('href="#quiz"', section)
-        self.assertIn('name="preferredDate"', html)
-        self.assertIn('name="preferredTime"', html)
+        self.assertIn('name="quizComment"', html)
+        self.assertIn('id="intakeStatus"', html)
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,166 @@
+diff --git a/FORM_SETUP.md b/FORM_SETUP.md
+index 1646980..3377318 100644
+--- a/FORM_SETUP.md
++++ b/FORM_SETUP.md
+@@ -76,3 +76,22 @@ location / {
+ ```
+ 
+ Проверить разрешённый Origin, отказ без согласия, неверный телефон, сбой/повтор Telegram, отказ без настройки оператора, защиту карточки, отсутствие дублей и очистку срока хранения. После развёртывания отдельно выполнить реальную сквозную проверку; локальные тесты не подтверждают доставку из ещё не подключённой инфраструктуры.
++
++## Совместимость с byttech-site (подготовлено к ревью)
++
++Для нового сайта выбран `POST /api/requests`; старый `/api/leads` донора
++сохраняется для его клиентов. Не подключайте к этой форме старый `webapp.py`,
++отправляющий контакты в Telegram. `GET /api/requests/config` возвращает готовность
++и версию `pd-2026-11-09-v1`. Дополнительный флаг `WEB_DOCUMENTS_CONFIRMED=1`
++необходимо устанавливать только после проверки адаптированных документов.
++
++Тело: submission_id (UUID), brand и problem (варианты web_leads.py), name,
++phone, необязательный comment, пустое website, personal_data_consent=true,
++consent_version=pd-2026-11-09-v1. Успех: accepted=true, request_id — положительное
++целое число. UUID внутренней карточки остаётся случайным, доступ — HTTP Basic
++по HTTPS. Имя, телефон и комментарий в Telegram не отправляются. Защита Origin,
++ограничения тела/частоты, идемпотентность, очередь и удаление через 30 дней общие
++с API донора. Отдельных полей даты/времени у нового callback-сценария нет;
++удобное время посетитель указывает в комментарии, запись не бронируется.
++
++Флаг не включён в этом checkout. Реальных отправок Telegram не выполнялось.
+diff --git a/web.env.example b/web.env.example
+index 2a09d94..ba18d01 100644
+--- a/web.env.example
++++ b/web.env.example
+@@ -14,3 +14,5 @@ WEB_DATABASE_PATH=data/web-leads.sqlite3
+ WEB_ADMIN_USER=admin
+ # Случайный пароль длиной не менее 20 символов, НЕ токен Telegram.
+ WEB_ADMIN_PASSWORD=
++# Только после проверки документов отдельного сайта byttech-site:
++WEB_DOCUMENTS_CONFIRMED=0
+diff --git a/web_api.py b/web_api.py
+index 4985143..8d1fb18 100644
+--- a/web_api.py
++++ b/web_api.py
+@@ -109,7 +109,7 @@ async def deliver_notifications(settings, store):
+             continue
+         # Имя, номер телефона и свободный комментарий не передаются Telegram.
+         text = ('Новая или обновлённая заявка с сайта БытТех.\n'
+-                f'Номер: {item["lead_id"]}\n'
++                f'Номер: {store.request_number(item["lead_id"])}\n'
+                 f'Карточка: {settings.public_url}/admin/leads/{item["lead_id"]}')
+         success = True
+         async with httpx.AsyncClient(timeout=12) as client:
+@@ -178,6 +178,35 @@ def create_app(settings=None, notifications=True):
+                 'address': settings.operator_address, 'email': settings.operator_email},
+                 'consent_version': CONSENT_VERSION, 'retention_days': 30}
+ 
++    @app.get('/api/requests/config')
++    def request_config():
++        return {'ready': settings.ready and os.getenv('WEB_DOCUMENTS_CONFIRMED') == '1',
++                'consent_version': 'pd-2026-11-09-v1'}
++
++    @app.post('/api/requests')
++    async def requests_compat(request: Request):
++        if not settings.ready or os.getenv('WEB_DOCUMENTS_CONFIRMED') != '1':
++            raise HTTPException(503, 'Приём заявок пока отключён.')
++        client = request.client.host if request.client else 'unknown'
++        if not store.consume_rate(client_hash(client, salt), int(time.time())):
++            raise HTTPException(429, 'Слишком много попыток. Повторите позже.')
++        body = bytearray()
++        async for chunk in request.stream():
++            body.extend(chunk)
++            if len(body) > 16384:
++                raise HTTPException(413, 'Слишком большой запрос.')
++        try:
++            data = json.loads(body)
++            if not isinstance(data, dict) or data.get('personal_data_consent') is not True or data.get('consent_version') != 'pd-2026-11-09-v1':
++                raise ValueError('Необходимо отдельное согласие актуальной версии.')
++            compatible = dict(data, consent=True, consent_version=CONSENT_VERSION)
++            submission, payload = validate(compatible)
++            digest = hashlib.sha256(json.dumps([payload, 'pd-2026-11-09-v1'], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
++            lead_id = store.save(submission, payload, digest, 'pd-2026-11-09-v1')
++        except (ValueError, TypeError, AttributeError):
++            raise HTTPException(422, 'Проверьте поля формы и согласие.') from None
++        return {'accepted': True, 'request_id': store.request_number(lead_id)}
++
+     @app.post('/api/leads')
+     async def leads(request: Request):
+         if not settings.ready:
+diff --git a/web_leads.py b/web_leads.py
+index 92b9d72..b5d5b54 100644
+--- a/web_leads.py
++++ b/web_leads.py
+@@ -40,6 +40,8 @@ class LeadStore:
+                 CREATE TABLE IF NOT EXISTS website_deliveries (
+                     outbox_id INTEGER NOT NULL, admin_id TEXT NOT NULL, delivered_at TEXT NOT NULL,
+                     PRIMARY KEY(outbox_id,admin_id));
++                CREATE TABLE IF NOT EXISTS website_request_numbers (
++                    number INTEGER PRIMARY KEY AUTOINCREMENT, lead_id TEXT UNIQUE NOT NULL);
+                 CREATE TABLE IF NOT EXISTS website_rate (
+                     client_hash TEXT PRIMARY KEY, window INTEGER NOT NULL, count INTEGER NOT NULL);
+             ''')
+@@ -90,6 +92,11 @@ class LeadStore:
+             db.execute('INSERT INTO website_outbox(lead_id,created_at) VALUES(?,?)', (lead_id, timestamp))
+         return lead_id
+ 
++    def request_number(self, lead_id):
++        with self.connect() as db:
++            db.execute('INSERT OR IGNORE INTO website_request_numbers(lead_id) VALUES(?)', (lead_id,))
++            return db.execute('SELECT number FROM website_request_numbers WHERE lead_id=?', (lead_id,)).fetchone()[0]
++
+     def get(self, lead_id):
+         with self.connect() as db:
+             return db.execute('SELECT * FROM website_leads WHERE id=?', (lead_id,)).fetchone()
+diff --git a/tests/test_requests_compat.py b/tests/test_requests_compat.py
+new file mode 100644
+index 0000000..3993b0a
+--- /dev/null
++++ b/tests/test_requests_compat.py
+@@ -0,0 +1,49 @@
++from dataclasses import replace
++import os
++import unittest
++from unittest.mock import patch
++from fastapi.testclient import TestClient
++import test_web_api as base
++from web_api import create_app
++
++
++class RequestsCompatibilityTests(unittest.TestCase):
++    setUp = base.WebApiTests.setUp
++    tearDown = base.WebApiTests.tearDown
++
++    def submit(self, **changes):
++        body=dict(self.body, personal_data_consent=True, consent_version='pd-2026-11-09-v1')
++        body.update(changes)
++        return self.client.post('/api/requests', json=body, headers=self.headers)
++
++    @patch.dict(os.environ, {'WEB_DOCUMENTS_CONFIRMED':'1'})
++    def test_accept_retry_and_consent_persisted(self):
++        self.assertTrue(self.client.get('/api/requests/config').json()['ready'])
++        first=self.submit(); self.assertEqual(first.status_code,200)
++        number=first.json()['request_id'];self.assertIs(type(number),int)
++        self.assertEqual(self.submit().json()['request_id'],number)
++        store=self.app.state.store
++        with store.connect() as db:
++            row=db.execute('SELECT * FROM website_leads').fetchone()
++            self.assertEqual(row['consent_version'],'pd-2026-11-09-v1')
++            self.assertTrue(row['consent_at'])
++            self.assertEqual(db.execute('SELECT COUNT(*) FROM website_leads').fetchone()[0],1)
++        self.assertEqual(len(store.pending()),1)
++        self.assertEqual(self.submit(name='Изменено').status_code,422)
++
++    @patch.dict(os.environ, {'WEB_DOCUMENTS_CONFIRMED':'0'})
++    def test_disabled_does_not_store(self):
++        self.assertFalse(self.client.get('/api/requests/config').json()['ready'])
++        self.assertEqual(self.submit().status_code,503)
++        self.assertEqual(self.app.state.store.pending(),[])
++
++    @patch.dict(os.environ, {'WEB_DOCUMENTS_CONFIRMED':'1'})
++    def test_reject_missing_consent_and_unknown_choices(self):
++        for change in ({'personal_data_consent':False},{'consent_version':'old'},{'phone':'123'},{'problem':'unknown'}):
++            self.assertEqual(self.submit(**change).status_code,422)
++
++    @patch.dict(os.environ, {'WEB_DOCUMENTS_CONFIRMED':'1'})
++    def test_missing_operator_disables_compatibility(self):
++        with TestClient(create_app(replace(self.settings,operator_name=''),notifications=False)) as client:
++            self.assertFalse(client.get('/api/requests/config').json()['ready'])
++            self.assertEqual(client.post('/api/requests',json=self.body,headers=self.headers).status_code,503)

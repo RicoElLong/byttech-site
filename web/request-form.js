@@ -11,38 +11,22 @@
   const errorBox = document.getElementById('quizError');
   const field = name => quiz.querySelector(`[name="${name}"]`);
   const controls = quiz.querySelectorAll('.quiz-form input, .quiz-form textarea, .quiz-form select, .quiz-opt');
-  const preferredDate = field('preferredDate');
-  const preferredTime = field('preferredTime');
   const consent = field('personalDataConsent');
-
-  function samaraToday() {
-    const parts = new Intl.DateTimeFormat('en-CA', {timeZone: 'Europe/Samara', year: 'numeric',
-      month: '2-digit', day: '2-digit'}).formatToParts(new Date());
-    const map = Object.fromEntries(parts.filter(p => p.type !== 'literal').map(p => [p.type,p.value]));
-    return [map.year,map.month,map.day].join('-');
+  let intakeReady = false;
+  const status = document.getElementById('intakeStatus');
+  const warning = document.getElementById('safetyWarning');
+  const endpoint = quiz.dataset.api;
+  async function checkIntake() {
+    if (!endpoint || !quiz.dataset.config) return;
+    try {
+      const response = await fetch(quiz.dataset.config, {credentials: 'omit', referrerPolicy: 'no-referrer', signal: AbortSignal.timeout(8000)});
+      const config = await response.json();
+      intakeReady = response.ok && config.ready === true && config.consent_version === 'pd-2026-11-09-v1';
+    } catch { intakeReady = false; }
+    status.textContent = intakeReady ? 'Можно отправить заявку. Визит согласуется после звонка.' : 'Приём заявок пока отключён. Позвоните мастеру или обратитесь в Telegram.';
+    updateUI();
   }
-  function dayPlus(iso, offset) {
-    const day = new Date(iso + 'T00:00:00Z');
-    day.setUTCDate(day.getUTCDate() + offset);
-    return day.toISOString().slice(0,10);
-  }
-  function refreshPreferred() {
-    const today = samaraToday();
-    preferredDate.min = today;
-    preferredDate.max = dayPlus(today, 6);
-    if (preferredDate.value && (preferredDate.value < preferredDate.min || preferredDate.value > preferredDate.max))
-      preferredDate.value = '';
-    const parts = new Intl.DateTimeFormat('en-GB', {timeZone:'Europe/Samara',hour:'2-digit',
-      minute:'2-digit',hour12:false}).formatToParts(new Date());
-    const hm = Object.fromEntries(parts.filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));
-    const nowClock = hm.hour.padStart(2,'0') + ':' + hm.minute.padStart(2,'0');
-    for(const option of preferredTime.options) {
-      if (!option.value) continue;
-      option.disabled = preferredDate.value === today && option.value <= nowClock;
-    }
-    if (preferredTime.selectedOptions.length && preferredTime.selectedOptions[0].disabled) preferredTime.value='';
-  }
-  refreshPreferred();
+  function focusStep() { steps[step - 1].querySelector('h3').focus({preventScroll: true}); }
   const answers = {brand: '', problem: ''};
   let step = 1;
   let sending = false;
@@ -50,7 +34,7 @@
 
   function validPhone(value) {
     const digits = value.replace(/\D/g, '');
-    return /^\+?[0-9 ()-]+$/.test(value) && digits.length >= 10 && digits.length <= 15;
+    return /^\+?[0-9 ()-]+$/.test(value) && (digits.length === 10 || /^[78][0-9]{10}$/.test(digits));
   }
 
   function updateUI() {
@@ -61,12 +45,11 @@
     btnBack.style.visibility = step === 4 ? 'hidden' : 'visible';
     nav.style.display = step === 4 ? 'none' : 'flex';
     quiz.setAttribute('aria-busy', String(sending));
-    const ready = step === 1 ? Boolean(answers.brand) : step === 2 ? Boolean(answers.problem)
-      : Boolean(field('quizName').value.trim()) && validPhone(field('quizPhone').value.trim())
-        && Boolean(preferredDate.value) && Boolean(preferredTime.value)
-        && preferredDate.value >= preferredDate.min && preferredDate.value <= preferredDate.max
-        && !preferredTime.selectedOptions[0]?.disabled && consent.checked;
+    const ready = step === 1 ? Boolean(answers.problem) : step === 2 ? Boolean(answers.brand)
+      : Boolean(field('quizName').value.trim()) && validPhone(field('quizPhone').value.trim()) && consent.checked && intakeReady;
     btnNext.disabled = sending || !ready;
+    warning.hidden = !['Протекает', 'Выбивает автомат'].includes(answers.problem);
+    warning.textContent = warning.hidden ? '' : 'Прекратите использование машины. Не касайтесь мокрой вилки и корпуса. Отключайте питание только из сухого безопасного места.';
     btnNext.textContent = sending ? 'Отправляем…' : step === 3 ? 'Отправить заявку' : 'Далее →';
   }
 
@@ -107,13 +90,11 @@
     link.addEventListener('click', () => {
       const option = problemOptions.find(item => item.dataset.value === link.dataset.serviceProblem);
       if (sending || step === 4 || !option) return;
-      step = answers.brand ? 2 : 1;
+      step = answers.brand ? 3 : 2;
       selectOption(problemGrid, option);
       steps[step - 1].querySelector('h3').focus({preventScroll: true});
     });
   });
-  preferredDate.addEventListener('change', refreshPreferred);
-  preferredTime.addEventListener('focus', refreshPreferred);
   controls.forEach(input => input.addEventListener('input', () => {
     showError();
     updateUI();
@@ -122,20 +103,19 @@
   btnNext.addEventListener('click', async () => {
     if (sending || step === 4) return;
     if (step < 3) {
-      if ((step === 1 && !answers.brand) || (step === 2 && !answers.problem)) return;
+      if ((step === 1 && !answers.problem) || (step === 2 && !answers.brand)) return;
       step++;
       updateUI();
+      focusStep();
       return;
     }
-    refreshPreferred();
+    if (!intakeReady) { showError('Приём заявок отключён.'); return; }
     if (!field('quizName').reportValidity() || !field('quizPhone').reportValidity()
-        || !validPhone(field('quizPhone').value.trim()) || !preferredDate.reportValidity()
-        || !preferredTime.reportValidity() || preferredTime.selectedOptions[0]?.disabled || !consent.reportValidity()) {
-      showError('Проверьте дату, время и отдельное согласие на обработку данных.'); return;
+        || !validPhone(field('quizPhone').value.trim()) || !consent.reportValidity()) {
+      showError('Проверьте имя, телефон и отдельное согласие на обработку данных.'); return;
     }
     const data = {...answers, name: field('quizName').value.trim(), phone: field('quizPhone').value.trim(),
       comment: field('quizComment').value.trim(), website: field('website').value,
-      preferred_date: preferredDate.value, preferred_time: preferredTime.value,
       personal_data_consent: consent.checked, consent_version: 'pd-2026-11-09-v1'};
     const snapshot = JSON.stringify(data);
     if (!pending || pending.snapshot !== snapshot) pending = {snapshot, id: uuid()};
@@ -146,22 +126,23 @@
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 15000);
     try {
-      const response = await fetch('/api/requests', {
+      const response = await fetch(endpoint, {
         method: 'POST', headers: {'Content-Type': 'application/json'},
-        credentials: 'omit', signal: controller.signal,
+        credentials: 'omit', referrerPolicy: 'no-referrer', signal: controller.signal,
         body: JSON.stringify({...data, submission_id: pending.id})
       });
       const result = await response.json();
       if (!response.ok || result.accepted !== true || !Number.isSafeInteger(result.request_id)
           || result.request_id <= 0) {
-        throw new Error(typeof result.error === 'string' ? result.error : 'Не удалось подтвердить сохранение заявки.');
+        throw new Error(typeof result.error === 'string' ? result.error : typeof result.detail === 'string' ? result.detail : 'Не удалось подтвердить сохранение заявки.');
       }
       document.getElementById('sumBrand').textContent = data.brand;
       document.getElementById('sumProblem').textContent = data.problem;
       document.getElementById('sumRequest').textContent = `№${result.request_id}`;
-      document.getElementById('sumPreferred').textContent = `${data.preferred_date.split('-').reverse().join('.')} ${data.preferred_time} (ожидает подтверждения)`;
       step = 4;
       pending = null;
+      updateUI();
+      focusStep();
     } catch (error) {
       const message = error.name === 'AbortError' || error instanceof TypeError || error instanceof SyntaxError
         ? 'Не удалось получить подтверждение. Проверьте интернет и повторите отправку — данные сохранены в форме.'
@@ -180,7 +161,9 @@
       step--;
       showError();
       updateUI();
+      focusStep();
     }
   });
   updateUI();
+  checkIntake();
 })();
