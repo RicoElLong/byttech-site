@@ -1,0 +1,47 @@
+name: Publish to GitHub Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'deploy/build_pages.py'
+      - '.github/workflows/pages.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - run: python3 deploy/build_pages.py
+        env:
+          OWNER_NAME: ${{ vars.OWNER_NAME }}
+          OWNER_INN: ${{ vars.OWNER_INN }}
+          OWNER_ADDRESS: ${{ vars.OWNER_ADDRESS }}
+          OWNER_PHONE: ${{ vars.OWNER_PHONE }}
+          OWNER_EMAIL: ${{ vars.OWNER_EMAIL }}
+          REQUEST_API_URL: ${{ vars.REQUEST_API_URL }}
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
