@@ -16,6 +16,7 @@ data/
 backups/
 
 # Development output
+/_site/
 __pycache__/
 *.py[cod]
 .venv/
