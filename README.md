@@ -38,8 +38,13 @@ node --check web/request-form.js
 
 ## Публикация на GitHub Pages
 
-В **Settings → Pages** выберите источник **GitHub Actions**. В **Settings →
-Secrets and variables → Actions → Variables** задайте подтверждённые
+В **Settings → Pages** выберите источник **GitHub Actions**. Пока
+`REQUEST_API_URL` не задан, сайт публикуется с кнопками звонка. По умолчанию
+используется публичный номер с сайта `bot-tech`. Его можно изменить через
+`OWNER_PHONE` в переменных GitHub Actions.
+
+Для публикации с формой в **Settings → Secrets and variables → Actions →
+Variables** задайте подтверждённые
 публичные реквизиты `OWNER_NAME`, `OWNER_INN`, `OWNER_ADDRESS`,
 `OWNER_PHONE` (в формате `+7XXXXXXXXXX`), `OWNER_EMAIL` и полный HTTPS-адрес
 обработчика `REQUEST_API_URL`, заканчивающийся на `/api/requests`.
@@ -51,8 +56,8 @@ Secrets and variables → Actions → Variables** задайте подтвер�
 
 Запустите workflow **Publish to GitHub Pages** в разделе **Actions**.
 Он собирает страницы из `web/`, подставляет реквизиты, преобразует ссылки
-для публикации в подпапке и подключает форму к указанному API. Если данные
-для сборки отсутствуют, публикация завершится ошибкой до загрузки сайта.
+для публикации в подпапке и подключает форму к указанному API. Если задан
+адрес API, сборка требует заполнения всех реквизитов.
 После первого запуска изменения страниц в ветке `main` публикуются автоматически.
 Ожидаемый адрес сайта: <https://ricoellong.github.io/byttech-site/>.
 
