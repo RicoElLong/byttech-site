@@ -231,6 +231,8 @@
   .footer-col h5{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:16px;font-weight:700}
   .footer-col a{display:block;font-size:14px;color:var(--text-2);padding:5px 0;transition:color .2s}
   .footer-col a:hover{color:var(--blue)}
+  .footer-col .consent-link{width:fit-content;max-width:100%;margin-top:6px;padding:8px 12px;border-radius:8px;background:var(--blue-light);color:var(--blue-dark);font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+  .footer-col .consent-link:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
   .footer-bottom{padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
   @media (max-width:640px){.footer-grid{grid-template-columns:1fr;gap:28px}}
 
@@ -947,7 +949,7 @@
         <a href="#districts">Районы</a>
         <a href="/legal">Об исполнителе и условиях ремонта</a>
         <a href="/privacy">Политика обработки персональных данных</a>
-        <a href="/consent">Согласие на обработку данных</a>
+        <a class="consent-link" href="/consent">Согласие на обработку персональных данных</a>
       </div>
     </div>
     <div class="footer-bottom">
