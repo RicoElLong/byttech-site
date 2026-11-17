@@ -22,6 +22,7 @@ def prepare_release(destination: Path, backend: Path, production=False):
         for name in required:
             shutil.copy2(backend/name,release/name)
         shutil.copy2(root/'deploy/nginx.conf.example',release/'nginx.conf.example')
+        shutil.copy2(root/'deploy/analytics_server.py',release/'analytics_server.py')
         release.rename(destination)
 
 
