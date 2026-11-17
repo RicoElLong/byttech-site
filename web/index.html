@@ -1002,7 +1002,7 @@
     link.addEventListener('click', event => {
       event.preventDefault();
       const frame = dialog.querySelector('iframe');
-      if (!frame.src) frame.src = frame.dataset.src;
+      if (!frame.src) frame.src = frame.dataset.src.replace('#embed', '?rev=20261117-2#embed');
       dialog.showModal();
       dialog.querySelector('#policyDialogClose').focus();
     });
