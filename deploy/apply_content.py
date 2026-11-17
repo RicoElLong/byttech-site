@@ -9,8 +9,8 @@ ROOT=Path(__file__).resolve().parents[1]
 
 def apply(path):
     bundle=load_bundle(ROOT,path)
-    # Validation completes before either source file is touched.
-    for key in ('site','articles'):
+    # Validation completes before any source file is touched.
+    for key in ('site','articles','reviews'):
         target=ROOT/'content'/f'{key}.json'
         temporary=target.with_suffix('.json.tmp')
         temporary.write_text(json.dumps(bundle[key],ensure_ascii=False,indent=2)+'\n',encoding='utf-8')

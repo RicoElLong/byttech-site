@@ -9,11 +9,23 @@ location = /api/analytics/event {
     client_max_body_size 2k;
     proxy_pass http://127.0.0.1:8002;
 }
-location = /api/analytics/report { proxy_pass http://127.0.0.1:8002; }
+location = /api/analytics/report {
+    auth_basic "BytTech admin";
+    auth_basic_user_file /etc/nginx/byttech-admin.htpasswd;
+    proxy_set_header Authorization "";
+    proxy_pass http://127.0.0.1:8002;
+}
 location /api/ { return 404; }
-location = /admin/ { try_files /admin/index.html =404; }
+location = /admin { return 308 /admin/; }
+location = /admin/ { rewrite ^ /admin/index.html last; }
 location ~ ^/admin/(index\.html|analytics\.(html|js)|editor\.js|preview\.js|style\.css|defaults\.json|schema\.json)$ {
+    auth_basic "BytTech admin";
+    auth_basic_user_file /etc/nginx/byttech-admin.htpasswd;
     try_files $uri =404;
 }
-location /admin/ { proxy_pass http://127.0.0.1:8001; }
+location /admin/ {
+    auth_basic "BytTech admin";
+    auth_basic_user_file /etc/nginx/byttech-admin.htpasswd;
+    proxy_pass http://127.0.0.1:8001;
+}
 # No database, .env files, backend code, or backups inside the web root.

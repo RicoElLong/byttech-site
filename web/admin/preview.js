@@ -1,5 +1,5 @@
 // Public-content preview only. The iframe is sandboxed and never runs site scripts.
-export function previewHome(html,data,base){
+export function previewHome(html,data,base,reviews){
  const doc=new DOMParser().parseFromString(html,'text/html');
  const text=(selector,value,root=doc)=>{const n=root.querySelector(selector);if(n)n.textContent=value;};
  const section={services:'#services',principles:'#honesty',discounts:'#discounts',why:'#features',tags:'#complaints',steps:'#how',important:'#important',districts:'#districts',cta:'#order'};
@@ -19,6 +19,25 @@ export function previewHome(html,data,base){
   parent.replaceChildren();rows.forEach((row,i)=>{const node=templates[Math.min(i,templates.length-1)].cloneNode(true);if(!body)node.textContent=row;else{if(title)text(title,key==='pricing'?row.name:row.title,node);text(body,key==='pricing'?row.price:row.text,node);if(key==='pricing')node.querySelector('.price-val').classList.toggle('free',row.price.trim().toLowerCase()==='бесплатно');if(key==='discounts')text('.pct',row.percent,node);if(key==='important')text('.warning-icon',row.icon,node);if(key==='steps')text('.step-num',String(i+1).padStart(2,'0'),node);}parent.append(node);});
  }
  const notes=doc.querySelector('.price-note ul');notes.replaceChildren(...data.pricing.footnotes.map(s=>{const li=doc.createElement('li');li.textContent=s;return li;}));
+ const reviewSlot=doc.querySelector('[data-reviews-slot]');
+ if(reviewSlot&&reviews){
+  const viewport=doc.createElement('div');
+  viewport.className=reviews.length?'reviews-viewport':'reviews-empty';
+  if(!reviews.length)viewport.textContent='Отзывы готовятся к публикации';
+  for(const review of reviews){
+   const card=doc.createElement('article');
+   card.className='review-card';
+   const quote=doc.createElement('blockquote');
+   quote.textContent=review.text;
+   const footer=doc.createElement('footer');
+   const author=doc.createElement('strong');
+   author.textContent=review.name;
+   footer.append(author,review.date);
+   card.append(quote,footer);
+   viewport.append(card);
+  }
+  reviewSlot.replaceChildren(viewport);
+ }
  doc.querySelectorAll('script').forEach(n=>n.remove());
  doc.querySelectorAll('a').forEach(n=>n.removeAttribute('href'));
  doc.querySelectorAll('input,button,textarea,select').forEach(n=>n.disabled=true);
