@@ -3,12 +3,13 @@ const KEY='byttech_public_editor_v1';
 const status=document.querySelector('#save-status');
 const content=document.querySelector('#content');
 let defaults,schema,data,active='global',fieldId=0;
-const tabs=[['global','Глобально'],['hero','Первый экран'],['form','Форма'],['services','Услуги'],['pricing','Прайс'],['principles','Принципы'],['discounts','Скидки'],['why','Почему я'],['tags','Поломки'],['steps','Шаги'],['important','Важно'],['districts','Районы'],['cta','Призыв к действию'],['seo','SEO'],['articles','Статьи'],['leads','Заявки'],['backup','Публикация']];
+const tabs=[['global','Глобально'],['hero','Первый экран'],['form','Форма'],['services','Услуги'],['pricing','Прайс'],['principles','Принципы'],['discounts','Скидки'],['why','Почему я'],['tags','Поломки'],['steps','Шаги'],['important','Важно'],['districts','Районы'],['cta','Призыв к действию'],['seo','SEO'],['articles','Статьи'],['reviews','Отзывы'],['leads','Заявки'],['backup','Публикация']];
 const labels={phone:'Телефон для отображения',phoneRaw:'Телефон для ссылки (+7XXXXXXXXXX)',hours:'Часы работы',city:'Город в подписи первого экрана',ctaButton:'Кнопка в шапке',seoTitle:'Title главной',seoDescription:'Description главной',ogTitle:'Open Graph title',ogDescription:'Open Graph description',title:'Заголовок',subtitle:'Описание',text:'Текст',features:'Карточки преимуществ',items:'Элементы',name:'Название работы',price:'Цена',footnotes:'Сноски',footnote:'Условия скидки',percent:'Процент / метка',icon:'Иконка (эмодзи)',disabledNotice:'Сообщение при отключённом приёме',steps:'Заголовки трёх шагов',successTitle:'Заголовок подтверждения',successText:'Текст подтверждения',maxInstruction:'Инструкция связи в MAX',problem:'Тип проблемы для формы',heading:'H1 статьи',slug:'URL статьи (латиница и дефисы)',description:'Description и анонс',body:'Текст статьи (Markdown)'};
 function node(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
 function button(text,action,cls='btn'){const b=node('button',text,cls);b.type='button';b.addEventListener('click',action);return b;}
 function notice(text,error=false){status.textContent=text;status.classList.toggle('field-error',error);}
 function validate(value){
+ if(value?.version===1 && !Object.hasOwn(value,'reviews')) value.reviews=structuredClone(defaults.reviews);
  function check(v,s,path){
   if(Array.isArray(s)){if(!Array.isArray(v)||v.length>100)throw Error(`${path}: неверный список`);v.forEach(x=>check(x,s[0],path));return;}
   if(s&&typeof s==='object'){if(!v||Array.isArray(v)||typeof v!=='object'||Object.keys(v).sort().join('|')!==Object.keys(s).sort().join('|'))throw Error(`${path}: неверный состав полей`);for(const k of Object.keys(s))check(v[k],s[k],path+'.'+k);return;}
@@ -23,6 +24,15 @@ function validate(value){
  const slugs=new Set();
  for(const a of value.articles){if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(a.slug)||a.slug==='index'||slugs.has(a.slug))throw Error('URL статей должны быть уникальными: латиница, цифры и дефисы');slugs.add(a.slug);if(Object.values(a).some(x=>!x.trim()))throw Error('Заполните все поля статьи');}
  for(const a of value.articles){for(const m of a.body.matchAll(/\]\(([^)]+)\)/g)){const url=m[1];if(url.startsWith('https://')||['/#quiz','/#prices'].includes(url))continue;const match=url.match(/^\/articles\/([a-z0-9-]+)\/$/);if(!match||!slugs.has(match[1]))throw Error('В статьях разрешены HTTPS-ссылки и ссылки на существующие страницы сайта');}}
+ if(value.reviews.length>30)throw Error('Можно опубликовать до 30 отзывов.');
+ for(const review of value.reviews){
+  const {name,text,date,sourceUrl,permission}=review;
+  if(!name.trim()||!text.trim()||!date.trim()||!permission)throw Error('Заполните имя, текст и дату отзыва и подтвердите разрешение на публикацию.');
+  let url;
+  try{url=new URL(sourceUrl);}catch{throw Error('Укажите публичную HTTPS-ссылку на отзыв.');}
+  if(url.protocol!=='https:'||url.username||url.password||!sourceUrl.startsWith('https://'))throw Error('Укажите публичную HTTPS-ссылку на отзыв.');
+  if(name.length>100||text.length>1200||date.length>40||sourceUrl.length>2048)throw Error('Одно из полей отзыва превышает допустимую длину.');
+ }
  return value;
 }
 function save(){
@@ -61,9 +71,31 @@ function renderArticles(){
  data.articles.forEach((a,i)=>{const box=node('section',undefined,'panel');box.append(node('h2',a.heading),button('Удалить статью',()=>{if(confirm('Удалить статью из черновика? Ссылки на неё нужно будет исправить.')){data.articles.splice(i,1);save();render();}},'btn btn-danger'));editObject(box,a,schema.articles[0]);content.append(box);});
  content.append(button('Добавить статью',()=>{let slug='novaya-statya';let i=1;while(data.articles.some(a=>a.slug===slug))slug='novaya-statya-'+i++;data.articles.push({slug,heading:'Новая статья',title:'Новая статья | БытТех',description:'Описание новой статьи',body:'Текст новой статьи.'});save();render();}));
 }
+function renderReviews(){
+ content.append(node('p','Добавляйте отзывы с разрешения клиента и указывайте ссылку на источник.'));
+ data.reviews.forEach((review,index)=>{
+  const card=node('section',undefined,'panel');
+  card.append(node('h2',review.name||'Новый отзыв'));
+  for(const [key,label] of [['name','Имя'],['text','Текст отзыва'],['date','Дата'],['sourceUrl','Ссылка на источник']]){
+   card.append(field(label,review[key],value=>{review[key]=value;},key==='text'));
+  }
+  const permission=node('input');
+  permission.type='checkbox';
+  permission.checked=review.permission;
+  permission.addEventListener('change',()=>{review.permission=permission.checked;save();});
+  const label=node('label');
+  label.append(permission,' Есть разрешение на публикацию');
+  card.append(label,button('Удалить отзыв',()=>{data.reviews.splice(index,1);save();render();},'btn btn-danger'));
+  content.append(card);
+ });
+ if(data.reviews.length<30)content.append(button('Добавить отзыв',()=>{
+  data.reviews.push(structuredClone(schema.reviews[0]));render();
+ }));
+}
 function render(){
  fieldId=0;const nav=document.querySelector('#tabs');nav.replaceChildren();for(const [key,label] of tabs){const b=button(label,()=>{active=key;render();},'tab'+(key===active?' active':''));if(key===active)b.setAttribute('aria-current','page');nav.append(b);}
  content.replaceChildren();
+ if(active==='reviews'){renderReviews();return;}
  if(active==='articles'){renderArticles();return;}
  if(active==='leads'){content.append(node('h2','Заявки'),node('p','Этот редактор не получает и не хранит заявки клиентов. Их защищённая обработка остаётся на отдельном сервере. GitHub Pages не предоставляет API заявок.'));return;}
  if(active==='backup'){
@@ -76,7 +108,7 @@ function render(){
  content.append(box);
 }
 async function preview(){
- try{validate(data);const response=await fetch('../index.html');if(!response.ok)throw Error('Не удалось загрузить главную');const html=previewHome(await response.text(),data.site,new URL('../',location.href).href);document.querySelector('#preview-frame').srcdoc=html;document.querySelector('#preview-dialog').showModal();}catch(e){notice(e.message,true);}
+ try{validate(data);const response=await fetch('../index.html');if(!response.ok)throw Error('Не удалось загрузить главную');const html=previewHome(await response.text(),data.site,new URL('../',location.href).href,data.reviews);document.querySelector('#preview-frame').srcdoc=html;document.querySelector('#preview-dialog').showModal();}catch(e){notice(e.message,true);}
 }
 async function init(){
  try{

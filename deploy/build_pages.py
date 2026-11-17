@@ -36,25 +36,17 @@ def markdown(text):
     return '\n'.join(output)
 
 
-def render_reviews(home):
+def render_reviews(home, reviews=None):
     """Only explicitly supplied, attributable customer reviews enter the carousel."""
-    reviews = json.loads((ROOT / 'content/reviews.json').read_text(encoding='utf-8'))
-    if not isinstance(reviews, list) or len(reviews) > 30:
-        raise ValueError('reviews.json must contain at most 30 reviews')
+    from content_model import validate_reviews
+    if reviews is None:
+        reviews = json.loads((ROOT / 'content/reviews.json').read_text(encoding='utf-8'))
+    validate_reviews(reviews)
     if not reviews:
         return home
     cards = []
     for review in reviews:
-        if not isinstance(review, dict) or set(review) != {'name', 'text', 'date', 'sourceUrl', 'permission'}:
-            raise ValueError('Review requires name, text, date, sourceUrl and permission')
         name, quote, date, url = (review[key] for key in ('name', 'text', 'date', 'sourceUrl'))
-        if review['permission'] is not True or any(not isinstance(v, str) or not v.strip() for v in (name, quote, date, url)):
-            raise ValueError('Publish only nonempty reviews with recorded permission')
-        parsed = urlsplit(url)
-        if parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password or len(url) > 2048:
-            raise ValueError('Review source must be a public HTTPS URL')
-        if len(name) > 100 or len(quote) > 1200 or len(date) > 40:
-            raise ValueError('Review field too long')
         cards.append('<article class="review-card"><blockquote><p>' + escape(quote) +
                      '</p></blockquote><footer><strong>' + escape(name) + '</strong><span>' +
                      escape(date) + ' · </span><a class="review-source" href="' +
@@ -105,7 +97,7 @@ def build(destination: Path, *, production=False, content_file=None):
     for key in fields:
         if not fields[key]:
             fields[key] = 'Будет указан до включения приёма заявок'
-    home = render_reviews(render_home((WEB_ROOT / 'index.html').read_text(), bundle['site']))
+    home = render_reviews(render_home((WEB_ROOT / 'index.html').read_text(), bundle['site']), bundle['reviews'])
     policy = (WEB_ROOT / 'privacy.html').read_text()
     policy_body = re.search(r'(<h2>1\. Общие положения</h2>.*?)(?=\s*</main>)', policy, re.S)
     if not policy_body or home.count('<!-- POLICY_DOCUMENT -->') != 1:
@@ -184,10 +176,12 @@ def build(destination: Path, *, production=False, content_file=None):
     for filename,source in output.items():
         target=destination/filename;target.parent.mkdir(parents=True,exist_ok=True);target.write_text(source,encoding='utf-8')
     import shutil
-    shutil.copytree(WEB_ROOT / 'admin', destination / 'admin')
-    (destination / 'admin/defaults.json').write_text(json.dumps(bundle,ensure_ascii=False),encoding='utf-8')
-    schema={'version':1,'site':extract((WEB_ROOT/'index.html').read_text()),'articles':[{'slug':'novaya-statya','heading':'Новая статья','title':'Новая статья | БытТех','description':'Описание','body':'Текст'}]}
-    (destination / 'admin/schema.json').write_text(json.dumps(schema,ensure_ascii=False),encoding='utf-8')
+    if os.getenv('OMIT_ADMIN') != '1':
+        shutil.copytree(WEB_ROOT / 'admin', destination / 'admin')
+        (destination / 'admin/defaults.json').write_text(json.dumps(bundle,ensure_ascii=False),encoding='utf-8')
+        schema={'version':1,'site':extract((WEB_ROOT/'index.html').read_text()),'articles':[{'slug':'novaya-statya','heading':'Новая статья','title':'Новая статья | БытТех','description':'Описание','body':'Текст'}]}
+        schema['reviews'] = [{'name': '', 'text': '', 'date': '', 'sourceUrl': '', 'permission': False}]
+        (destination / 'admin/schema.json').write_text(json.dumps(schema,ensure_ascii=False),encoding='utf-8')
     if (WEB_ROOT / 'assets').is_dir():
         shutil.copytree(WEB_ROOT / 'assets', destination / 'assets')
 

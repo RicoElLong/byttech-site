@@ -4,6 +4,7 @@ from html import escape, unescape
 from html.parser import HTMLParser
 import json
 import re
+from urllib.parse import urlsplit
 
 VOID = {'area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'}
 
@@ -194,8 +195,25 @@ def render_home(source,data):
     return root.render()
 
 
+def validate_reviews(reviews):
+    if not isinstance(reviews, list) or len(reviews) > 30:
+        raise ValueError('reviews.json must contain at most 30 reviews')
+    for review in reviews:
+        if not isinstance(review, dict) or set(review) != {'name', 'text', 'date', 'sourceUrl', 'permission'}:
+            raise ValueError('Review requires name, text, date, sourceUrl and permission')
+        name, quote, date, url = (review[key] for key in ('name', 'text', 'date', 'sourceUrl'))
+        if review['permission'] is not True or any(not isinstance(v, str) or not v.strip() for v in (name, quote, date, url)):
+            raise ValueError('Publish only nonempty reviews with recorded permission')
+        parsed = urlsplit(url)
+        if parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password or len(url) > 2048:
+            raise ValueError('Review source must be a public HTTPS URL')
+        if len(name) > 100 or len(quote) > 1200 or len(date) > 40:
+            raise ValueError('Review field too long')
+    return reviews
+
+
 def validate_bundle(bundle, root):
-    if not isinstance(bundle,dict) or set(bundle)!={'version','site','articles'} or type(bundle['version']) is not int or bundle['version']!=1:
+    if not isinstance(bundle,dict) or set(bundle)-{'reviews'}!={'version','site','articles'} or type(bundle['version']) is not int or bundle['version']!=1:
         raise ValueError('Expected a version 1 public content export')
     shape=extract((root/'web/index.html').read_text())
     site=validate(bundle['site'],shape)
@@ -214,7 +232,8 @@ def validate_bundle(bundle, root):
                 raise ValueError('Article links must use HTTPS or known site routes')
         for slug_link in re.findall(r'\]\(/articles/([a-z0-9-]+)/\)',article['body']):
             if slug_link not in {a['slug'] for a in articles}:raise ValueError('Article references a missing publication')
-    return {'version':1,'site':site,'articles':articles}
+    reviews = bundle['reviews'] if 'reviews' in bundle else json.loads((root/'content/reviews.json').read_text(encoding='utf-8'))
+    return {'version':1,'site':site,'articles':articles,'reviews':validate_reviews(reviews)}
 
 
 def load_bundle(root, path=None):
