@@ -106,6 +106,13 @@ def build(destination: Path, *, production=False, content_file=None):
         if not fields[key]:
             fields[key] = 'Будет указан до включения приёма заявок'
     home = render_reviews(render_home((WEB_ROOT / 'index.html').read_text(), bundle['site']))
+    policy = (WEB_ROOT / 'privacy.html').read_text()
+    policy_body = re.search(r'(<h2>1\. Общие положения</h2>.*?)(?=\s*</main>)', policy, re.S)
+    if not policy_body or home.count('<!-- POLICY_DOCUMENT -->') != 1:
+        raise ValueError('Privacy policy content is missing from the modal build.')
+    # Keep the dialog self-contained: no nested document or links that navigate away.
+    modal_text = re.sub(r'<a\b[^>]*>(.*?)</a>', r'\1', policy_body[1], flags=re.S)
+    home = home.replace('<!-- POLICY_DOCUMENT -->', modal_text)
     if endpoint:
         home = home.replace('data-api="" data-config=""', f'data-api="{escape(endpoint, quote=True)}" data-config="{escape(endpoint.rsplit("/",1)[0] + "/requests/config", quote=True)}"')
     style = re.search(r'<style>.*?</style>', home, re.S)[0]

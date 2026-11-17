@@ -388,15 +388,16 @@
   .privacy-note{font-size:13px;color:#4c6071;line-height:1.55}
   .privacy-note [data-open-policy]{font-weight:700}
   .privacy-consent:focus-within{outline:2px solid #389bd3;outline-offset:2px}
-  .policy-dialog{position:fixed;inset:0;width:min(960px,calc(100vw - 32px));height:min(840px,calc(100dvh - 40px));max-width:none;max-height:none;margin:auto;padding:0;border:0;border-radius:12px;background:#fff;box-shadow:0 22px 70px rgba(9,28,53,.27);overflow:hidden}
-  .policy-dialog::backdrop{background:rgba(8,19,35,.7)}
-  .policy-dialog-head{height:58px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 18px 0 28px;border-bottom:1px solid #e2e8f0;background:#fff}
-  .policy-dialog-head strong{font-size:16px;line-height:1.3;color:#17263e}
-  .policy-dialog-close{width:44px;height:44px;border:0;border-radius:9px;background:#edf7fc;color:#17263e;font-family:inherit;font-size:32px;line-height:1;cursor:pointer}
-  .policy-dialog-close:hover{background:#d9effa}
-  .policy-dialog-close:focus-visible{outline:3px solid #0077aa;outline-offset:2px}
-  .policy-dialog iframe{display:block;width:100%;height:calc(100% - 58px);border:0;background:#fff}
-  @media(max-width:600px){.policy-dialog{width:calc(100vw - 16px);height:calc(100dvh - 16px);border-radius:10px}.policy-dialog-head{padding-left:16px}.policy-dialog-head strong{font-size:14px}}
+  .policy-dialog{position:fixed;inset:0;width:100%;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:transparent;overflow-y:auto;overscroll-behavior:contain}
+  .policy-dialog::backdrop{background:rgba(10,17,20,.68)}
+  .policy-paper{width:min(960px,calc(100% - 48px));margin:64px auto;padding:58px 44px 68px;background:#fff;color:#101820;font:16px/1.55 Arial,system-ui,sans-serif;overflow-wrap:anywhere}
+  .policy-paper>strong{display:block;font-size:16px;line-height:1.5;margin:0 0 2px}
+  .policy-paper h2{font:inherit;margin:0 0 2px;color:inherit}
+  .policy-paper p{font:inherit;margin:0 0 12px;color:inherit}
+  .policy-paper p:last-child{margin-bottom:0}
+  .policy-dialog-close{position:fixed;z-index:1;top:22px;right:24px;width:44px;height:44px;border:0;background:transparent;color:#fff;font-family:inherit;font-size:38px;line-height:1;cursor:pointer}
+  .policy-dialog-close:focus-visible{outline:3px solid #fff;outline-offset:2px}
+  @media(max-width:600px){.policy-paper{width:calc(100% - 16px);margin:54px auto 8px;padding:34px 20px 42px;font-size:15px}.policy-dialog-close{top:4px;right:8px}}
   /* Brand image and customer reviews */
   .brand-panel{background:#fff;border:1px solid var(--border);border-radius:20px;padding:22px;box-shadow:0 12px 36px rgba(18,49,84,.04)}
   .brand-viewport{overflow-x:auto;scrollbar-color:var(--blue-mid) transparent;overscroll-behavior-inline:contain}
@@ -949,7 +950,7 @@
         <a href="#how">Как вызвать</a>
         <a href="#districts">Районы</a>
         <a href="/legal">Об исполнителе и условиях ремонта</a>
-        <a href="/privacy">Политика обработки персональных данных</a>
+        <a href="/privacy" data-open-policy>Политика обработки персональных данных</a>
         <a class="consent-link" href="/consent">Согласие на обработку персональных данных</a>
       </div>
     </div>
@@ -991,21 +992,21 @@
 <!-- END CONTACT WIDGETS -->
 
 <dialog class="policy-dialog" id="policyDialog" aria-labelledby="policyDialogTitle">
-  <div class="policy-dialog-head"><strong id="policyDialogTitle">Политика обработки персональных данных — БытТех</strong><button type="button" class="policy-dialog-close" id="policyDialogClose" aria-label="Закрыть политику">×</button></div>
-  <iframe title="Текст политики обработки персональных данных БытТех" data-src="/privacy#embed"></iframe>
+  <button type="button" class="policy-dialog-close" id="policyDialogClose" aria-label="Закрыть политику">×</button>
+  <div class="policy-paper"><strong id="policyDialogTitle">Политика в отношении обработки персональных данных</strong>
+    <!-- POLICY_DOCUMENT -->
+  </div>
 </dialog>
 <script>
   (() => {
     const dialog = document.getElementById('policyDialog');
-    const link = document.querySelector('[data-open-policy]');
-    if (!dialog || !link || typeof dialog.showModal !== 'function') return;
-    link.addEventListener('click', event => {
+    if (!dialog || typeof dialog.showModal !== 'function') return;
+    document.querySelectorAll('[data-open-policy]').forEach(link => link.addEventListener('click', event => {
       event.preventDefault();
-      const frame = dialog.querySelector('iframe');
-      if (!frame.src) frame.src = frame.dataset.src.replace('#embed', '?rev=20261117-2#embed');
+      dialog.scrollTop = 0;
       dialog.showModal();
       dialog.querySelector('#policyDialogClose').focus();
-    });
+    }));
     dialog.querySelector('#policyDialogClose').addEventListener('click', () => dialog.close());
     dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
   })();
