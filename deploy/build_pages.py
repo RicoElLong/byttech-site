@@ -107,7 +107,7 @@ def build(destination: Path, *, production=False, content_file=None):
     urls=[]
     for filename,source in list(output.items()):
         if not filename.endswith('.html'): continue
-        source = source.replace('</head>', '<link rel="icon" type="image/avif" href="/assets/favicon.avif"></head>', 1)
+        source = source.replace('</head>', '<link rel="icon" type="image/avif" href="/assets/favicon.avif"><link rel="icon" type="image/svg+xml" href="/assets/favicon.svg"></head>', 1)
         if not has_email:
             source = re.sub(r'<a href="mailto:[^"]*">.*?</a>', 'Email будет указан до включения приёма заявок', source)
         path = '/' if filename=='index.html' else '/' + filename.removesuffix('index.html')
