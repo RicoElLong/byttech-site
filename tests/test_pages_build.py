@@ -46,6 +46,11 @@ class PagesBuildTests(unittest.TestCase):
         self.assertTrue((self.site/'assets/washer-brands.webp').is_file())
         self.assertIn('href="./consent.html"',home)
         self.assertIn('href="./privacy.html"',home)
+        privacy=(self.site/'privacy.html').read_text()
+        self.assertNotIn('servic-bt.ru',privacy)
+        self.assertNotIn('info@servic-bt.ru',privacy)
+        self.assertIn('Приём заявок через форму БытТех отключён',privacy)
+        self.assertIn('pd-2026-11-09-v1',privacy)
 
     def test_reviews_need_permission_and_escape_content(self):
         review = {'name':'Анонимный клиент','text':'<b>Спасибо</b>',
