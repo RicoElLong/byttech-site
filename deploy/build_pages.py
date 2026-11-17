@@ -176,12 +176,11 @@ def build(destination: Path, *, production=False, content_file=None):
     for filename,source in output.items():
         target=destination/filename;target.parent.mkdir(parents=True,exist_ok=True);target.write_text(source,encoding='utf-8')
     import shutil
-    if os.getenv('OMIT_ADMIN') != '1':
-        shutil.copytree(WEB_ROOT / 'admin', destination / 'admin')
-        (destination / 'admin/defaults.json').write_text(json.dumps(bundle,ensure_ascii=False),encoding='utf-8')
-        schema={'version':1,'site':extract((WEB_ROOT/'index.html').read_text()),'articles':[{'slug':'novaya-statya','heading':'Новая статья','title':'Новая статья | БытТех','description':'Описание','body':'Текст'}]}
-        schema['reviews'] = [{'name': '', 'text': '', 'date': '', 'sourceUrl': '', 'permission': False}]
-        (destination / 'admin/schema.json').write_text(json.dumps(schema,ensure_ascii=False),encoding='utf-8')
+    shutil.copytree(WEB_ROOT / 'admin', destination / 'admin')
+    (destination / 'admin/defaults.json').write_text(json.dumps(bundle,ensure_ascii=False),encoding='utf-8')
+    schema={'version':1,'site':extract((WEB_ROOT/'index.html').read_text()),'articles':[{'slug':'novaya-statya','heading':'Новая статья','title':'Новая статья | БытТех','description':'Описание','body':'Текст'}]}
+    schema['reviews'] = [{'name': '', 'text': '', 'date': '', 'sourceUrl': '', 'permission': False}]
+    (destination / 'admin/schema.json').write_text(json.dumps(schema,ensure_ascii=False),encoding='utf-8')
     if (WEB_ROOT / 'assets').is_dir():
         shutil.copytree(WEB_ROOT / 'assets', destination / 'assets')
 

@@ -41,7 +41,6 @@ jobs:
           SITE_URL: https://ricoellong.github.io/byttech-site
           WEB_DOCUMENTS_CONFIRMED: "0"
           REQUEST_API_URL: ""
-          OMIT_ADMIN: "1"
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
