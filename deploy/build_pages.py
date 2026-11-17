@@ -1,5 +1,5 @@
 """Build review or production pages without publishing or inventing owner details."""
-from html import escape
+from html import escape, unescape
 import json
 import os
 from pathlib import Path
@@ -113,7 +113,26 @@ def build(destination: Path, *, production=False, content_file=None):
         path = '/' if filename=='index.html' else '/' + filename.removesuffix('index.html')
         if base:
             canonical=base+path
-            source=source.replace('</head>',f'<link rel="canonical" href="{escape(canonical,quote=True)}"></head>')
+            metadata = f'<link rel="canonical" href="{escape(canonical, quote=True)}">'
+            title = re.search(r'<title>(.*?)</title>', source, re.S)
+            if filename == 'index.html' or filename.startswith('articles/'):
+                description = re.search(r'<meta name="description" content="([^"]*)"', source)
+                og_fields = {
+                    'title': unescape(title[1]),
+                    'type': 'article' if filename.startswith('articles/') and filename != 'articles/index.html' else 'website',
+                    'url': canonical,
+                    'image': f'{base}/assets/favicon.avif',
+                    'image:alt': 'Логотип БытТех',
+                    'site_name': 'БытТех',
+                    'locale': 'ru_RU',
+                }
+                if description:
+                    og_fields['description'] = unescape(description[1])
+                metadata += ''.join(
+                    f'<meta property="og:{key}" content="{escape(value, quote=True)}">'
+                    for key, value in og_fields.items()
+                )
+            source = source.replace('</head>', metadata + '</head>', 1)
             urls.append(canonical)
         source=re.sub(r'\{\{(OWNER_[A-Z_0-9]+)\}\}',lambda m:escape(fields[m[1]],quote=True),source)
         source=re.sub(r'\b(href|src)="(/(?!/)[^"#]*)(#[^"]*)?"',lambda m:site_link(m,len(Path(filename).parts)-1),source)
