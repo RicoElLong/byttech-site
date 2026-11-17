@@ -55,6 +55,8 @@ class PagesBuildTests(unittest.TestCase):
         self.assertNotIn('info@servic-bt.ru',privacy)
         self.assertIn('Приём заявок через форму БытТех отключён',privacy)
         self.assertIn('pd-2026-11-09-v1',privacy)
+        self.assertIn('2. Основные понятия',privacy)
+        self.assertIn('12. Заключительные положения и обновления',privacy)
 
     def test_reviews_need_permission_and_escape_content(self):
         review = {'name':'Анонимный клиент','text':'<b>Спасибо</b>',
