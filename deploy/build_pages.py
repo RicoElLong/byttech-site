@@ -99,7 +99,6 @@ def build(destination: Path, *, production=False, content_file=None):
         if not re.fullmatch(r'\d{12}', fields['OWNER_INN']) or not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+', fields['OWNER_EMAIL']):
             raise ValueError('Check OWNER_INN and OWNER_EMAIL.')
     has_email = bool(fields['OWNER_EMAIL'])
-    has_owner = all(fields.values())
     fields['OWNER_PHONE_E164'] = fields['OWNER_PHONE']
     if not os.getenv('OWNER_PHONE'):
         fields['OWNER_PHONE'] = bundle['site']['global']['phone']
@@ -107,8 +106,6 @@ def build(destination: Path, *, production=False, content_file=None):
         if not fields[key]:
             fields[key] = 'Будет указан до включения приёма заявок'
     home = render_reviews(render_home((WEB_ROOT / 'index.html').read_text(), bundle['site']))
-    if not has_owner:
-        home = re.sub(r'<p class="footer-legal">.*?</p>', '<p class="footer-legal">Приём заявок на сайте отключён. Реквизиты и документы ожидают подтверждения.</p>', home, flags=re.S)
     if endpoint:
         home = home.replace('data-api="" data-config=""', f'data-api="{escape(endpoint, quote=True)}" data-config="{escape(endpoint.rsplit("/",1)[0] + "/requests/config", quote=True)}"')
     style = re.search(r'<style>.*?</style>', home, re.S)[0]
