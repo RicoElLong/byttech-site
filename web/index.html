@@ -385,8 +385,18 @@
   .privacy-consent input{width:20px;height:20px;min-width:20px;accent-color:#087daf;margin-top:3px;cursor:pointer}
   .privacy-consent label{font-size:13px;line-height:1.55;color:#213b56}
   .privacy-consent a,.privacy-note a{color:#006895;text-decoration:underline;text-underline-offset:2px}
-  .privacy-note{font-size:12px;color:#4c6071;line-height:1.55}
+  .privacy-note{font-size:13px;color:#4c6071;line-height:1.55}
+  .privacy-note [data-open-policy]{font-weight:700}
   .privacy-consent:focus-within{outline:2px solid #389bd3;outline-offset:2px}
+  .policy-dialog{position:fixed;inset:0;width:min(960px,calc(100vw - 32px));height:min(840px,calc(100dvh - 40px));max-width:none;max-height:none;margin:auto;padding:0;border:0;border-radius:12px;background:#fff;box-shadow:0 22px 70px rgba(9,28,53,.27);overflow:hidden}
+  .policy-dialog::backdrop{background:rgba(8,19,35,.7)}
+  .policy-dialog-head{height:58px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 18px 0 28px;border-bottom:1px solid #e2e8f0;background:#fff}
+  .policy-dialog-head strong{font-size:16px;line-height:1.3;color:#17263e}
+  .policy-dialog-close{width:44px;height:44px;border:0;border-radius:9px;background:#edf7fc;color:#17263e;font-family:inherit;font-size:32px;line-height:1;cursor:pointer}
+  .policy-dialog-close:hover{background:#d9effa}
+  .policy-dialog-close:focus-visible{outline:3px solid #0077aa;outline-offset:2px}
+  .policy-dialog iframe{display:block;width:100%;height:calc(100% - 58px);border:0;background:#fff}
+  @media(max-width:600px){.policy-dialog{width:calc(100vw - 16px);height:calc(100dvh - 16px);border-radius:10px}.policy-dialog-head{padding-left:16px}.policy-dialog-head strong{font-size:14px}}
   /* Brand image and customer reviews */
   .brand-panel{background:#fff;border:1px solid var(--border);border-radius:20px;padding:22px;box-shadow:0 12px 36px rgba(18,49,84,.04)}
   .brand-viewport{overflow-x:auto;scrollbar-color:var(--blue-mid) transparent;overscroll-behavior-inline:contain}
@@ -497,7 +507,7 @@
             <input type="checkbox" id="personalDataConsent" name="personalDataConsent" required />
             <label for="personalDataConsent">Я даю <a href="/consent" target="_blank" rel="noopener noreferrer">согласие на обработку персональных данных</a> для ответа на мою заявку и согласования ремонта. Согласие не касается рекламных рассылок.</label>
           </div>
-          <p class="privacy-note">Перед отправкой ознакомьтесь с <a href="/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a> и <a href="/legal" target="_blank" rel="noopener noreferrer">информацией об исполнителе</a>. Галочка не установлена заранее.</p>
+          <p class="privacy-note"><a href="/privacy" data-open-policy>Отправляя данные, вы соглашаетесь на обработку персональных данных</a>. Ознакомьтесь также с <a href="/legal" target="_blank" rel="noopener noreferrer">информацией об исполнителе</a>. Для отправки заявки требуется отдельная галочка выше.</p>
           <input type="text" name="website" style="position:absolute;left:-9999px" tabindex="-1" autocomplete="off" aria-hidden="true">
           <p id="quizError" role="alert" style="color:#b42318;font-size:14px" hidden></p>
         </div>
@@ -979,6 +989,27 @@
 
 <a class="telegram-fab" href="https://t.me/TechnikNaDom_bot" aria-label="Оставить заявку в Telegram" title="Написать в Telegram" target="_blank" rel="noopener noreferrer"><img class="telegram-art" src="/assets/telegram-icon.webp" width="1024" height="1024" alt="" decoding="async"></a>
 <!-- END CONTACT WIDGETS -->
+
+<dialog class="policy-dialog" id="policyDialog" aria-labelledby="policyDialogTitle">
+  <div class="policy-dialog-head"><strong id="policyDialogTitle">Политика обработки персональных данных — БытТех</strong><button type="button" class="policy-dialog-close" id="policyDialogClose" aria-label="Закрыть политику">×</button></div>
+  <iframe title="Текст политики обработки персональных данных БытТех" data-src="/privacy#embed"></iframe>
+</dialog>
+<script>
+  (() => {
+    const dialog = document.getElementById('policyDialog');
+    const link = document.querySelector('[data-open-policy]');
+    if (!dialog || !link || typeof dialog.showModal !== 'function') return;
+    link.addEventListener('click', event => {
+      event.preventDefault();
+      const frame = dialog.querySelector('iframe');
+      if (!frame.src) frame.src = frame.dataset.src;
+      dialog.showModal();
+      dialog.querySelector('#policyDialogClose').focus();
+    });
+    dialog.querySelector('#policyDialogClose').addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+  })();
+</script>
 
 <script>
 
