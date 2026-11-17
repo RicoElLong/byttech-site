@@ -26,11 +26,9 @@ form.addEventListener('submit', async (event) => {
   const data = new FormData(form);
   try {
     const response = await fetch('/api/analytics/report?days=' + data.get('days'), {
-      headers: { Authorization: 'Bearer ' + data.get('token') },
       redirect: 'error',
       cache: 'no-store',
     });
-    if (response.status === 401) throw new Error('Проверьте ключ доступа.');
     if (!response.ok) throw new Error('Сервис аналитики сейчас недоступен.');
     const report = await response.json();
     const totals = new Map(report.totals.map(row => [row.kind, row]));

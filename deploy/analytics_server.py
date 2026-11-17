@@ -1,6 +1,5 @@
 """Private loopback service for website traffic reports. Serve publicly via HTTPS nginx."""
 import argparse
-import hmac
 import json
 import os
 import re
@@ -81,9 +80,6 @@ class Handler(BaseHTTPRequestHandler):
         match = re.fullmatch(r'/api/analytics/report\?days=(1|7|30|90)', self.path)
         if not match:
             return self.respond(404)
-        token = self.headers.get('Authorization', '').encode()
-        if not hmac.compare_digest(token, self.server.authorization):
-            return self.respond(401)
         seconds = int(match[1]) * 86400
         with closing(sqlite3.connect(self.server.database)) as db:
             db.row_factory = sqlite3.Row
@@ -107,16 +103,14 @@ def main():
     parser.add_argument('--database', type=Path, required=True)
     parser.add_argument('--port', type=int, default=8002)
     args = parser.parse_args()
-    token = os.environ.get('ANALYTICS_ADMIN_TOKEN', '')
     origin = os.environ.get('ANALYTICS_SITE_ORIGIN', '')
-    if len(token) < 32 or not token.isascii() or not re.fullmatch(r'https://[^/?#]+', origin):
-        parser.error('Set ANALYTICS_ADMIN_TOKEN (32+ ASCII characters) and ANALYTICS_SITE_ORIGIN (HTTPS origin).')
+    if not re.fullmatch(r'https://[^/?#]+', origin):
+        parser.error('Set ANALYTICS_SITE_ORIGIN (HTTPS origin).')
     os.umask(0o077)
     initialize(args.database)
     with ThreadingHTTPServer(('127.0.0.1', args.port), Handler) as server:
         server.database = args.database
         server.site_origin = origin
-        server.authorization = ('Bearer ' + token).encode()
         server.serve_forever()
 
 
