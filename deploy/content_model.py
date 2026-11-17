@@ -86,7 +86,7 @@ def field(node, selector):
 def extract(source):
     root=Document(source).root
     data={'global':{'phone':'+7 (905) 303-15-51','phoneRaw':'+79053031551',
-        'hours':root.one(cls='header-hours').text().replace('22:00по','22:00 по'),'city':'Самара',
+        'hours':root.one(cls='header-hours').text().replace('20:00звонки','20:00 — звонки').replace('22:00по','22:00 по'),'city':'Самара',
         'ctaButton':root.one(cls='header-cta').text(),
         'seoTitle':root.one('title').text(),
         'seoDescription':next(n.attrs['content'] for n in root.all('meta') if n.attrs.get('name')=='description'),
@@ -152,7 +152,9 @@ def render_home(source,data):
     root.one(cls='header-cta').set_text(data['global']['ctaButton'])
     hours=root.one(cls='header-hours')
     hours_text=data['global']['hours']
-    if ' по ' in hours_text:
+    if ' — ' in hours_text:
+        first,last=hours_text.split(' — ',1);hours.children=['<strong>'+escape(first)+'</strong>','<span>'+escape(last)+'</span>']
+    elif ' по ' in hours_text:
         first,last=hours_text.split(' по ',1);hours.children=['<strong>'+escape(first)+'</strong>',escape('по '+last)]
     else:hours.set_text(hours_text)
     root.one(cls='hero-badge').set_text('Ремонт стиральных машин · '+data['global']['city'])
