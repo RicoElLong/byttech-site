@@ -36,6 +36,39 @@ def markdown(text):
     return '\n'.join(output)
 
 
+def render_reviews(home):
+    """Only explicitly supplied, attributable customer reviews enter the carousel."""
+    reviews = json.loads((ROOT / 'content/reviews.json').read_text(encoding='utf-8'))
+    if not isinstance(reviews, list) or len(reviews) > 30:
+        raise ValueError('reviews.json must contain at most 30 reviews')
+    if not reviews:
+        return home
+    cards = []
+    for review in reviews:
+        if not isinstance(review, dict) or set(review) != {'name', 'text', 'date', 'sourceUrl', 'permission'}:
+            raise ValueError('Review requires name, text, date, sourceUrl and permission')
+        name, quote, date, url = (review[key] for key in ('name', 'text', 'date', 'sourceUrl'))
+        if review['permission'] is not True or any(not isinstance(v, str) or not v.strip() for v in (name, quote, date, url)):
+            raise ValueError('Publish only nonempty reviews with recorded permission')
+        parsed = urlsplit(url)
+        if parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password or len(url) > 2048:
+            raise ValueError('Review source must be a public HTTPS URL')
+        if len(name) > 100 or len(quote) > 1200 or len(date) > 40:
+            raise ValueError('Review field too long')
+        cards.append('<article class="review-card"><blockquote><p>' + escape(quote) +
+                     '</p></blockquote><footer><strong>' + escape(name) + '</strong><span>' +
+                     escape(date) + ' · </span><a class="review-source" href="' +
+                     escape(url, quote=True) + '" target="_blank" rel="noopener noreferrer">Источник отзыва ↗</a></footer></article>')
+    markup = ('<div class="reviews-viewport" id="reviewsViewport" tabindex="0" role="region" '
+              'aria-roledescription="карусель" aria-label="Отзывы клиентов">' + ''.join(cards) +
+              '</div><div class="reviews-controls" aria-label="Управление отзывами">'
+              '<button type="button" id="reviewsPrev" aria-label="Предыдущий отзыв">←</button>'
+              '<output id="reviewsCount" aria-live="polite"></output>'
+              '<button type="button" id="reviewsNext" aria-label="Следующий отзыв">→</button></div>')
+    return re.sub(r'(<div class="reviews-layout" data-reviews-slot>).*?(</div>\s*</div>\s*</section>\s*<!-- IMPORTANT -->)',
+                  lambda m: m[1] + markup + '\n    ' + m[2], home, count=1, flags=re.S)
+
+
 def build(destination: Path, *, production=False, content_file=None):
     import sys
     module_dir = str(Path(__file__).resolve().parent)
@@ -73,7 +106,7 @@ def build(destination: Path, *, production=False, content_file=None):
     for key in fields:
         if not fields[key]:
             fields[key] = 'Будет указан до включения приёма заявок'
-    home = render_home((WEB_ROOT / 'index.html').read_text(), bundle['site'])
+    home = render_reviews(render_home((WEB_ROOT / 'index.html').read_text(), bundle['site']))
     if not has_owner:
         home = re.sub(r'<p class="footer-legal">.*?</p>', '<p class="footer-legal">Приём заявок на сайте отключён. Реквизиты и документы ожидают подтверждения.</p>', home, flags=re.S)
     if endpoint:
