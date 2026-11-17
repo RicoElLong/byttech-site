@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Статистика · БытТех</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./analytics.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Статистика · БытТех</h1>
+    <a class="btn" href="./index.html">К редактору сайта</a>
+  </header>
+  <main>
+    <form id="analytics-report" method="post">
+      <label>Период
+        <select name="days">
+          <option value="1">24 часа</option>
+          <option value="7" selected>7 дней</option>
+          <option value="30">30 дней</option>
+          <option value="90">90 дней</option>
+        </select>
+      </label>
+      <label>Ключ доступа
+        <input name="token" type="password" autocomplete="off" required>
+      </label>
+      <button class="btn btn-primary" type="submit">Показать отчёт</button>
+    </form>
+    <p id="analytics-status" role="status">Отчёт доступен после подключения аналитики на хостинге.</p>
+    <div id="analytics-results" hidden style="overflow-x:auto">
+      <p>Уникальные браузеры считаются по случайному ID. Клик по телефону учитывается при открытии ссылки для звонка.</p>
+      <table>
+        <thead><tr><th scope="col">Действие</th><th scope="col">Всего</th><th scope="col">Уникальных браузеров</th></tr></thead>
+        <tbody id="analytics-totals"></tbody>
+      </table>
+      <h2>Страницы и ссылки</h2>
+      <table>
+        <thead><tr><th scope="col">Страница или ссылка</th><th scope="col">Всего</th><th scope="col">Уникальных браузеров</th></tr></thead>
+        <tbody id="analytics-details"></tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>
