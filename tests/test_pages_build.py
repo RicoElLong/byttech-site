@@ -41,6 +41,25 @@ class PagesBuildTests(unittest.TestCase):
         home=(self.site/'index.html').read_text()
         self.assertIn('data-api=""',home)
         self.assertEqual(home.count('class="quiz-opt"'),26)
+        self.assertIn('Отзывы готовятся к публикации',home)
+        self.assertNotIn('id="reviewsViewport"',home)
+        self.assertTrue((self.site/'assets/washer-brands.webp').is_file())
+        self.assertIn('href="./consent.html"',home)
+        self.assertIn('href="./privacy.html"',home)
+
+    def test_reviews_need_permission_and_escape_content(self):
+        review = {'name':'Анонимный клиент','text':'<b>Спасибо</b>',
+                  'date':'17.11.2026','sourceUrl':'https://example.org/review/1','permission':True}
+        content=Path(self.temp.name)/'content';content.mkdir()
+        (content/'reviews.json').write_text(json.dumps([review]),encoding='utf-8')
+        with patch.object(pages,'ROOT',Path(self.temp.name)):
+            html=pages.render_reviews((ROOT/'web/index.html').read_text())
+            self.assertIn('id="reviewsViewport"',html)
+            self.assertIn('&lt;b&gt;Спасибо&lt;/b&gt;',html)
+            self.assertNotIn('Отзывы готовятся к публикации',html)
+            review['permission']=False
+            (content/'reviews.json').write_text(json.dumps([review]),encoding='utf-8')
+            with self.assertRaises(ValueError):pages.render_reviews(html)
 
     @patch.dict(os.environ,{'SITE_URL':'https://example.test/byttech-site'},clear=True)
     def test_configured_production_canonical_and_sitemap(self):

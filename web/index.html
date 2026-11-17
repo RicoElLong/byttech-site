@@ -387,6 +387,28 @@
   .privacy-consent a,.privacy-note a{color:#006895;text-decoration:underline;text-underline-offset:2px}
   .privacy-note{font-size:12px;color:#4c6071;line-height:1.55}
   .privacy-consent:focus-within{outline:2px solid #389bd3;outline-offset:2px}
+  /* Brand image and customer reviews */
+  .brand-panel{background:#fff;border:1px solid var(--border);border-radius:20px;padding:22px;box-shadow:0 12px 36px rgba(18,49,84,.04)}
+  .brand-viewport{overflow-x:auto;scrollbar-color:var(--blue-mid) transparent;overscroll-behavior-inline:contain}
+  .brand-viewport img{display:block;width:100%;min-width:840px;height:auto}
+  .brand-caption{margin-top:16px;color:var(--muted);font-size:13px;line-height:1.5}
+  .reviews-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+  .reviews-viewport{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-inline:contain;padding:4px 2px 16px}
+  .reviews-viewport::-webkit-scrollbar{display:none}
+  .review-card{flex:0 0 calc((100% - 32px)/3);scroll-snap-align:start;min-width:0;background:#fff;border:1px solid var(--border);border-radius:16px;padding:26px;display:flex;flex-direction:column;gap:16px}
+  .review-card blockquote{font-size:16px;line-height:1.7;color:var(--text);margin:0;white-space:pre-line}
+  .review-card footer{margin-top:auto;font-size:13px;color:var(--text-2)}
+  .review-card footer strong{display:block;font-size:15px;color:var(--text)}
+  .review-source{color:var(--blue-dark);text-decoration:underline;text-underline-offset:3px}
+  .reviews-controls{display:flex;align-items:center;gap:12px;justify-content:flex-end}
+  .reviews-controls button{width:44px;height:44px;border-radius:50%;background:#fff;color:var(--blue-dark);border:1px solid var(--blue-mid);font-size:23px;line-height:1;cursor:pointer}
+  .reviews-controls button:hover{background:var(--blue-light)}
+  .reviews-controls button:disabled{opacity:.45;cursor:default}
+  .reviews-controls output{color:var(--text-2);font-size:14px;min-width:60px;text-align:center;font-variant-numeric:tabular-nums}
+  .reviews-empty{border:1px solid var(--blue-mid);border-radius:16px;padding:28px;background:#fff;color:var(--text-2);max-width:720px}
+  .reviews-empty strong{display:block;color:var(--text);margin-bottom:8px}
+  @media(max-width:900px){.review-card{flex-basis:calc((100% - 16px)/2)}}
+  @media(max-width:600px){.brand-panel{padding:14px}.brand-viewport img{min-width:700px}.review-card{flex-basis:88%;padding:22px}.reviews-controls{justify-content:center}}
 
 .header-inner{padding-inline:20px}.request-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:24px;align-items:start;margin-top:24px}.quiz-card{width:100%;min-width:0}.telegram-request{padding:24px;background:white;border:1px solid var(--border);border-radius:16px}.telegram-request .btn{white-space:normal;margin-top:20px}.max-card-close{min-width:44px;min-height:44px}#safetyWarning{padding:16px;background:#fff4d4;color:#624300;margin:16px 0}.quiz-count{position:absolute;top:-28px;right:0}.quiz-progress{overflow:visible;margin-top:32px}.quiz-summary-row span{overflow-wrap:anywhere}@media(max-width:760px){.request-layout{grid-template-columns:1fr}}
 
@@ -473,9 +495,9 @@
           <label for="quizComment">Модель, код ошибки или удобное время (необязательно)</label><textarea id="quizComment" name="quizComment" placeholder="Комментарий (необязательно)" maxlength="1000" rows="2"></textarea>
           <div class="privacy-consent">
             <input type="checkbox" id="personalDataConsent" name="personalDataConsent" required />
-            <label for="personalDataConsent">Даю отдельное <a href="/consent" target="_blank" rel="noopener noreferrer">согласие на обработку персональных данных</a> для ответа на заявку и согласования ремонта. Без рекламных рассылок.</label>
+            <label for="personalDataConsent">Я даю <a href="/consent" target="_blank" rel="noopener noreferrer">согласие на обработку персональных данных</a> для ответа на мою заявку и согласования ремонта. Согласие не касается рекламных рассылок.</label>
           </div>
-          <p class="privacy-note">Оператор и порядок обработки указаны в <a href="/privacy" target="_blank" rel="noopener noreferrer">политике персональных данных</a>. Условия ремонта — <a href="/legal" target="_blank" rel="noopener noreferrer">в информации об исполнителе</a>.</p>
+          <p class="privacy-note">Перед отправкой ознакомьтесь с <a href="/privacy" target="_blank" rel="noopener noreferrer">политикой обработки персональных данных</a> и <a href="/legal" target="_blank" rel="noopener noreferrer">информацией об исполнителе</a>. Галочка не установлена заранее.</p>
           <input type="text" name="website" style="position:absolute;left:-9999px" tabindex="-1" autocomplete="off" aria-hidden="true">
           <p id="quizError" role="alert" style="color:#b42318;font-size:14px" hidden></p>
         </div>
@@ -763,6 +785,23 @@
   </div>
 </section>
 
+<!-- BRANDS -->
+<section class="section" id="brands" aria-labelledby="brandsTitle">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="section-label">Марка и модель</span>
+      <h2 id="brandsTitle">Расскажите, какая у вас <em>машинка</em></h2>
+      <p>Марка помогает подготовиться к разговору о поломке. Если не знаете модель, посмотрите наклейку на корпусе или просто опишите проблему.</p>
+    </div>
+    <div class="brand-panel reveal">
+      <div class="brand-viewport" tabindex="0" role="region" aria-label="Логотипы марок техники, прокручивайте по горизонтали на узком экране">
+        <img src="/assets/washer-brands.webp" width="2022" height="692" loading="lazy" decoding="async" alt="Марки техники: Liebherr, Philips, Ariston, Panasonic, Samsung, Siemens, Smeg, Electrolux, Sharp, JVC, Toshiba, Ardo, Candy, Indesit, Teka, Zanussi, Miele, Gorenje, AEG, LG">
+      </div>
+      <p class="brand-caption">Изображение помогает узнать марку. Логотипы принадлежат их владельцам и не означают партнёрства с производителями.</p>
+    </div>
+  </div>
+</section>
+
 <!-- HOW -->
 <section class="section" id="how">
   <div class="container">
@@ -786,6 +825,21 @@
         <h3>Ремонт на месте</h3>
         <p>Проведу диагностику, назову стоимость и после согласия починю. Проверю на всех режимах.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="section section-alt" id="reviews" aria-labelledby="reviewsTitle">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="section-label">Обратная связь</span>
+      <h2 id="reviewsTitle">Отзывы о работе <em>БытТех</em></h2>
+      <p>Здесь публикуются отзывы клиентов после их разрешения. Текст и источник каждого отзыва можно проверить.</p>
+    </div>
+    <!-- Reviews are inserted by the build from content/reviews.json. -->
+    <div class="reviews-layout" data-reviews-slot>
+      <div class="reviews-empty"><strong>Отзывы готовятся к публикации</strong><p>Пока здесь нет подтверждённых отзывов клиентов. Если вы уже обращались к Олегу, можете поделиться впечатлением напрямую с мастером.</p></div>
     </div>
   </div>
 </section>
@@ -1064,6 +1118,41 @@
 })();
 </script>
 
+<script>
+(() => {
+  const viewport = document.getElementById('reviewsViewport');
+  if (!viewport) return;
+  const cards = [...viewport.querySelectorAll('.review-card')];
+  const prev = document.getElementById('reviewsPrev');
+  const next = document.getElementById('reviewsNext');
+  const count = document.getElementById('reviewsCount');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  function current() {
+    const left = viewport.scrollLeft;
+    return cards.reduce((best, card, i) => Math.abs(card.offsetLeft - viewport.offsetLeft - left) <
+      Math.abs(cards[best].offsetLeft - viewport.offsetLeft - left) ? i : best, 0);
+  }
+  function update() {
+    const index = current();
+    count.textContent = `${index + 1} / ${cards.length}`;
+    prev.disabled = index === 0;
+    next.disabled = index === cards.length - 1;
+  }
+  function go(delta) {
+    const index = Math.max(0, Math.min(cards.length - 1, current() + delta));
+    viewport.scrollTo({left: cards[index].offsetLeft - viewport.offsetLeft, behavior: reduceMotion.matches ? 'instant' : 'smooth'});
+  }
+  prev.addEventListener('click', () => go(-1));
+  next.addEventListener('click', () => go(1));
+  viewport.addEventListener('scroll', () => requestAnimationFrame(update), {passive:true});
+  viewport.addEventListener('keydown', event => {
+    if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      event.preventDefault(); go(event.key === 'ArrowRight' ? 1 : -1);
+    }
+  });
+  update();
+})();
+</script>
 <script src="/request-form.js" defer></script>
 </body>
 </html>
