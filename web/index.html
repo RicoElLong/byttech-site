@@ -205,6 +205,20 @@
   .warning strong{color:var(--text);font-weight:600}
   @media (max-width:640px){.warnings{grid-template-columns:1fr}}
 
+  /* Numbered repair notes */
+  #features .features{counter-reset:repair;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid #c9dce8;border-left:1px solid #c9dce8}
+  #features .feature{border:0;border-right:1px solid #c9dce8;border-bottom:1px solid #c9dce8;border-radius:0;padding:28px 26px;background:transparent}
+  #features .feature::before{counter-increment:repair;content:counter(repair,decimal-leading-zero);display:block;margin-bottom:22px;color:#007bb4;font-size:13px;font-weight:800;letter-spacing:.12em}
+  #features .feature-icon{display:none}
+  #features .feature:hover{transform:none;box-shadow:none;background:#f1faff}
+  #important .warnings{max-width:1040px;gap:0;border-top:1px solid #c9dce8}
+  #important .warning{border:0;border-bottom:1px solid #c9dce8;border-radius:0;background:transparent;padding:23px 22px;gap:18px}
+  #important .warning:nth-child(odd){border-right:1px solid #c9dce8}
+  #important .warning:hover{background:#eef8fd}
+  #important .warning-icon{min-width:30px;color:#007bb4;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.08em}
+  @media(max-width:780px){#features .features{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:640px){#features .features{grid-template-columns:1fr}#important .warning:nth-child(odd){border-right:0}#important .warning{padding:20px 4px}}
+
   /* DISTRICTS */
   .districts{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;max-width:1040px;margin:0 auto}
   .district{padding:16px 20px;border-radius:8px;background:#fff;border:1px solid var(--border);font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;color:var(--text-2);transition:all .2s}
@@ -213,7 +227,7 @@
 
   /* CTA */
   .cta-wrap{background:var(--bg-dark);border-radius:var(--radius-lg);padding:64px 48px;text-align:center;color:#fff;position:relative;overflow:hidden}
-  .cta-wrap::before{content:'';position:absolute;top:-50%;right:-20%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(26,86,219,.3),transparent 70%);pointer-events:none}
+  .cta-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--blue);pointer-events:none}
   .cta-wrap h2{font-size:clamp(26px,3.2vw,38px);font-weight:800;letter-spacing:0;line-height:1.15;margin-bottom:16px;position:relative}
   .cta-wrap h2 em{font-family:inherit;font-style:normal;font-weight:inherit;color:#93c5fd}
   .cta-wrap p{color:#94a3b8;max-width:500px;margin:0 auto 32px;font-size:16px;line-height:1.7;position:relative}
@@ -617,7 +631,7 @@
     <div class="section-head center reveal">
       <span class="section-label">Наши принципы</span>
       <h2>Работаю честно — <em>без сюрпризов</em></h2>
-      <p>Три правила, которые отличают меня от сервисов с «умными» мастерами</p>
+      <p>Оценка до выезда, согласование цены после диагностики и документы по ремонту.</p>
     </div>
     <div class="features reveal">
       <div class="feature">
@@ -860,32 +874,32 @@
 <section class="section section-alt" id="important">
   <div class="container">
     <div class="section-head center reveal">
-      <span class="section-label">Честно и без разводов</span>
+      <span class="section-label">Памятка клиенту</span>
       <h2>Важно <em>знать</em></h2>
     </div>
     <div class="warnings reveal">
       <div class="warning">
-        <span class="warning-icon">📞</span>
+        <span class="warning-icon" aria-hidden="true">01</span>
         <p><strong>Если проблема понятна по описанию, постараюсь назвать предварительную стоимость по телефону.</strong> Опишите поломку и модель — скажу ориентировочную стоимость ещё до выезда. В сложных случаях требуется осмотр на месте.</p>
       </div>
       <div class="warning">
-        <span class="warning-icon">🛡️</span>
+        <span class="warning-icon" aria-hidden="true">02</span>
         <p><strong>Цена фиксируется после диагностики и не растёт в процессе.</strong> Никаких сюрпризов в конце ремонта.</p>
       </div>
       <div class="warning">
-        <span class="warning-icon">📜</span>
+        <span class="warning-icon" aria-hidden="true">03</span>
         <p><strong>Гарантийный талон выдаю на руки, чек — электронный.</strong> После ремонта получите бумажный талон с точным сроком гарантии. Чек придёт электронно через «Мой налог».</p>
       </div>
       <div class="warning">
-        <span class="warning-icon">✅</span>
+        <span class="warning-icon" aria-hidden="true">04</span>
         <p><strong>Работаю официально как самозанятый.</strong> На каждую работу пробиваю чек в приложении «Мой налог» — он приходит вам электронно. Это подтверждает оплату и защищает обе стороны.</p>
       </div>
       <div class="warning">
-        <span class="warning-icon">🚫</span>
-        <p><strong>Избегайте мастерских с подозрительно низкой ценой.</strong> Качественный ремонт не может стоить дёшево.</p>
+        <span class="warning-icon" aria-hidden="true">05</span>
+        <p><strong>Сравнивайте условия, а не только цену.</strong> Уточняйте стоимость диагностики, работы и запчастей до начала ремонта.</p>
       </div>
       <div class="warning">
-        <span class="warning-icon">💬</span>
+        <span class="warning-icon" aria-hidden="true">06</span>
         <p><strong>Есть сомнения? Звоните напрямую.</strong> Задам пару вопросов и скажу, нужен ли вообще выезд.</p>
       </div>
     </div>
