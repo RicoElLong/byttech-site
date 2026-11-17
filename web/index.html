@@ -243,8 +243,6 @@
   .footer-col h5{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:16px;font-weight:700}
   .footer-col a{display:block;font-size:14px;color:var(--text-2);padding:5px 0;transition:color .2s}
   .footer-col a:hover{color:var(--blue)}
-  .footer-col .consent-link{width:fit-content;max-width:100%;margin-top:6px;padding:8px 12px;border-radius:8px;background:var(--blue-light);color:var(--blue-dark);font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
-  .footer-col .consent-link:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
   .footer-bottom{padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
   @media (max-width:640px){.footer-grid{grid-template-columns:1fr;gap:28px}}
 
@@ -395,12 +393,10 @@
 @media(max-width:900px){.float-call{right:23px;bottom:calc(100px + env(safe-area-inset-bottom,0px))}}
 @media(max-width:600px){.max-fab{right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px))}.max-card{right:16px;bottom:calc(95px + env(safe-area-inset-bottom,0px))}.float-call{right:20px;bottom:calc(94px + env(safe-area-inset-bottom,0px))}}
 @media(prefers-reduced-motion:reduce){.max-fab{transition:none}}
-  .privacy-consent{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;background:#f0f9ff;border-radius:10px;border:1px solid #c6e7f8;margin:8px 0 0}
+  .privacy-consent{display:flex;gap:10px;align-items:flex-start;margin:10px 0 0}
   .privacy-consent input{width:20px;height:20px;min-width:20px;accent-color:#087daf;margin-top:3px;cursor:pointer}
   .privacy-consent label{font-size:13px;line-height:1.55;color:#213b56}
-  .privacy-consent a,.privacy-note a{color:#006895;text-decoration:underline;text-underline-offset:2px}
-  .privacy-note{font-size:13px;color:#4c6071;line-height:1.55}
-  .privacy-note [data-open-policy]{font-weight:700}
+  .privacy-consent a{color:#006895;text-decoration:underline;text-underline-offset:2px}
   .privacy-consent:focus-within{outline:2px solid #389bd3;outline-offset:2px}
   .policy-dialog{position:fixed;inset:0;width:100%;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:transparent;overflow-y:auto;overscroll-behavior:contain}
   html:has(.policy-dialog[open]){overflow:hidden}
@@ -521,9 +517,8 @@
           <label for="quizComment">Модель, код ошибки или удобное время (необязательно)</label><textarea id="quizComment" name="quizComment" placeholder="Комментарий (необязательно)" maxlength="1000" rows="2"></textarea>
           <div class="privacy-consent">
             <input type="checkbox" id="personalDataConsent" name="personalDataConsent" required />
-            <label for="personalDataConsent">Я даю <a href="/consent" target="_blank" rel="noopener noreferrer">согласие на обработку персональных данных</a> для ответа на мою заявку и согласования ремонта. Согласие не касается рекламных рассылок.</label>
+            <label for="personalDataConsent"><a href="/privacy" data-open-policy>Отправляя данные, вы соглашаетесь на обработку персональных данных</a>. <a href="/consent" target="_blank" rel="noopener noreferrer">Условия согласия</a>.</label>
           </div>
-          <p class="privacy-note"><a href="/privacy" data-open-policy>Отправляя данные, вы соглашаетесь на обработку персональных данных</a>. Ознакомьтесь также с <a href="/legal" target="_blank" rel="noopener noreferrer">информацией об исполнителе</a>. Для отправки заявки требуется отдельная галочка выше.</p>
           <input type="text" name="website" style="position:absolute;left:-9999px" tabindex="-1" autocomplete="off" aria-hidden="true">
           <p id="quizError" role="alert" style="color:#b42318;font-size:14px" hidden></p>
         </div>
@@ -966,7 +961,6 @@
         <a href="#districts">Районы</a>
         <a href="/legal">Об исполнителе и условиях ремонта</a>
         <a href="/privacy" data-open-policy>Политика обработки персональных данных</a>
-        <a class="consent-link" href="/consent">Согласие на обработку персональных данных</a>
       </div>
     </div>
     <div class="footer-bottom">
