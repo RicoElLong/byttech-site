@@ -389,6 +389,7 @@
   .privacy-note [data-open-policy]{font-weight:700}
   .privacy-consent:focus-within{outline:2px solid #389bd3;outline-offset:2px}
   .policy-dialog{position:fixed;inset:0;width:100%;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:transparent;overflow-y:auto;overscroll-behavior:contain}
+  html:has(.policy-dialog[open]){overflow:hidden}
   .policy-dialog::backdrop{background:rgba(10,17,20,.68)}
   .policy-paper{width:min(960px,calc(100% - 48px));margin:64px auto;padding:58px 44px 68px;background:#fff;color:#101820;font:16px/1.55 Arial,system-ui,sans-serif;overflow-wrap:anywhere}
   .policy-paper>strong{display:block;font-size:16px;line-height:1.5;margin:0 0 2px}
